@@ -27,4 +27,11 @@ public class ExceptionHandlerController {
         var responseBody = new ResponseDTO<>(-1, message);
         return ResponseEntity.ok(responseBody);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDTO<?>> handleExceptions(Exception ex) {
+        var message = String.format("Excepción encontrada: %s - %s", ex.getCause(), ex.getMessage());
+        var responseBody = new ResponseDTO<>(-1, message);
+        return ResponseEntity.ok(responseBody);
+    }
 }
