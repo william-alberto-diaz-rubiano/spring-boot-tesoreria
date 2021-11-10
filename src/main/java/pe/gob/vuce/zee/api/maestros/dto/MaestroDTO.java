@@ -2,7 +2,6 @@ package pe.gob.vuce.zee.api.maestros.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import java.util.Deque;
 
 import java.util.UUID;
 

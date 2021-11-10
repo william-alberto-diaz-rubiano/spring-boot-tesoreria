@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface IdentidadService {
     IdentidadDTO consultarDni(String numeroDocumento) throws IOException;
-    IdentidadDTO consultarRuc(String numeroDocumento);
-    IdentidadDTO consultarCe(String numeroDocumento);
+    IdentidadDTO consultarRuc(String numeroDocumento) throws IOException;
+    IdentidadDTO consultarCe(String numeroDocumento) throws IOException;
 }

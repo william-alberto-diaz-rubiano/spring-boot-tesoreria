@@ -1,23 +1,15 @@
 package pe.gob.vuce.zee.api.maestros.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.Condition;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.Provider;
-import org.modelmapper.builder.ConfigurableConditionExpression;
-import org.modelmapper.builder.ConfigurableConverterExpression;
-import org.modelmapper.builder.ConfigurableProviderExpression;
-import org.modelmapper.builder.ReferenceMapExpression;
-import org.modelmapper.spi.DestinationSetter;
-import org.modelmapper.spi.SourceGetter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.maestros.base.Constantes;
 import pe.gob.vuce.zee.api.maestros.consumer.ReniecAPI;
+import pe.gob.vuce.zee.api.maestros.consumer.SunatAPI;
 import pe.gob.vuce.zee.api.maestros.dto.IdentidadDTO;
 import pe.gob.vuce.zee.api.maestros.dto.ReniecContentDTO;
-import pe.gob.vuce.zee.api.maestros.dto.ReniecResponseDTO;
+import pe.gob.vuce.zee.api.maestros.dto.SunatResponseDTO;
 import pe.gob.vuce.zee.api.maestros.exceptions.IdentityException;
 import pe.gob.vuce.zee.api.maestros.service.IdentidadService;
 
@@ -28,11 +20,15 @@ import java.util.Optional;
 @Slf4j
 public class IdentidadServiceImpl implements IdentidadService {
     private final ReniecAPI reniecApiConsumer;
+    private final SunatAPI sunatApiConsumer;
     private final ModelMapper modelMapper;
 
 
-    public IdentidadServiceImpl(@Qualifier("reniecApiConsumer") ReniecAPI reniecApiConsumer, ModelMapper modelMapper) {
+    public IdentidadServiceImpl(@Qualifier("reniecApiConsumer") ReniecAPI reniecApiConsumer,
+                                @Qualifier("sunatApiConsumer") SunatAPI sunatApiConsumer,
+                                ModelMapper modelMapper) {
         this.reniecApiConsumer = reniecApiConsumer;
+        this.sunatApiConsumer = sunatApiConsumer;
         this.modelMapper = modelMapper;
     }
 
@@ -45,7 +41,7 @@ public class IdentidadServiceImpl implements IdentidadService {
             var body = response.body();
             if (body != null) {
                 if (body.getCoResultado().equals("0000")) {
-                    return Optional.ofNullable(body.getDatosPersona())
+                    var result = Optional.ofNullable(body.getDatosPersona())
                             .map(datos -> modelMapper.typeMap(ReniecContentDTO.class, IdentidadDTO.class)
                                     .addMappings(mapper -> {
                                         mapper.map(ReniecContentDTO::getApPrimer, IdentidadDTO::setApellidoPaterno);
@@ -58,7 +54,9 @@ public class IdentidadServiceImpl implements IdentidadService {
                                     })
                                     .map(datos))
                             .orElseThrow(() -> new IdentityException(String.format("No se obtuvo resultado al consultar %s", numeroDocumento)));
-
+                    result.setTipoDocumento("DNI");
+                    result.setNumeroDocumento(numeroDocumento);
+                    return result;
                 } else {
                     throw new IdentityException(body.getCoResultado(), body.getDeResultado());
                 }
@@ -71,12 +69,32 @@ public class IdentidadServiceImpl implements IdentidadService {
     }
 
     @Override
-    public IdentidadDTO consultarRuc(String numeroDocumento) {
-        return null;
+    public IdentidadDTO consultarRuc(String numeroDocumento) throws IOException {
+        var callResponse = sunatApiConsumer.consultaRuc(numeroDocumento);
+        var response = callResponse.execute();
+
+        if (response.code() == 200) {
+            var body = response.body();
+            var result = Optional.ofNullable(response.body())
+                    .map(sunatResponse -> modelMapper
+                            .typeMap(SunatResponseDTO.class, IdentidadDTO.class)
+                            .addMappings(mapper -> {
+                                mapper.map(SunatResponseDTO::getDomicioLegal, IdentidadDTO::setDireccion);
+                                mapper.map(SunatResponseDTO::getEsActivo, IdentidadDTO::setActivo);
+                                mapper.map(SunatResponseDTO::getEsHabido, IdentidadDTO::setHabido);
+                            })
+                            .map(sunatResponse)
+                    ).orElseThrow(() -> new IdentityException(String.format("No se pudo obtener resultado al consultar el RUC %s", numeroDocumento)));
+            result.setTipoDocumento("RUC");
+            result.setNumeroDocumento(numeroDocumento);
+            return result;
+        } else {
+            throw new IdentityException(String.format("El servicio retorno el codigo %d al consultar el RUC %s", response.code(), numeroDocumento));
+        }
     }
 
     @Override
-    public IdentidadDTO consultarCe(String numeroDocumento) {
+    public IdentidadDTO consultarCe(String numeroDocumento) throws IOException {
         return null;
     }
 }

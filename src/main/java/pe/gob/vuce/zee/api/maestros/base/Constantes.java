@@ -8,12 +8,9 @@ public class Constantes {
     }
 
     public final static int HABILITADO = 0;
-    public final static int DESHABILITADO = 9;
+//    public final static int DESHABILITADO = 9;
 
-    public final static String CONTENT_TYPE_XLSX = "application/vnd.ms-excel";
-    public final static String CONTENT_TYPE_CSV = "text/csv";
-
-    public final static UUID UID_TEST = UUID.fromString("00000000-0000-0000-0000-000000000000");
+//    public final static UUID UID_TEST = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     public final static int NO_ERROR = 0;
 
