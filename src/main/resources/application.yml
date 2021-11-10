@@ -4,9 +4,9 @@ server:
   port : 8081
 spring:
   datasource:
-    url: jdbc:postgresql://${POSTGRESQL_HOST}/${POSTGRESQL_DATABASE}
-    username: ${POSTGRESQL_USERNAME}
-    password: ${POSTGRESQL_PASSWORD}
+    url: jdbc:postgresql://10.19.34.188:5432/zee_db?currentSchema=vuce_zee
+    username: zeeperu
+    password: CicQB888PD8LJGxn
     driver-class-name: org.postgresql.Driver
   jpa:
     database: POSTGRESQL
@@ -22,3 +22,6 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+identidad:
+  consultaDniUrl: 'http://10.19.34.185:30000/'
+  consultaRucUrl: 'http://endose-sunat-api-service'
