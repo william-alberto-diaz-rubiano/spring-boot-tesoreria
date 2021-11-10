@@ -23,5 +23,5 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 identidad:
-  consultaDniUrl: 'http://10.19.34.185:30000/'
-  consultaRucUrl: 'http://endose-sunat-api-service'
+  consultaDniUrl: 'http://10.19.34.157:30000/'
+  consultaRucUrl: 'http://endose-sunat-api-service.development.svc.cluster.local'

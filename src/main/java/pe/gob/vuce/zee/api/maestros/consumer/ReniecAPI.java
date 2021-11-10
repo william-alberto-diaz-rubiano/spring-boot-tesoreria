@@ -8,6 +8,6 @@ import retrofit2.http.Query;
 
 public interface ReniecAPI {
     @GET("pide/Reniec/Consultar")
-    @Headers({"Accept: application/json", "Host: landing-desa.vuce.gob.pe"})
+    @Headers({"Accept: application/json", "Host: landing-test.vuce.gob.pe"})
     Call<ReniecResponseDTO> consultaDni(@Query("nuDniConsulta") String dni, @Query("aplicacion") String aplicacion);
 }
