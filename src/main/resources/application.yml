@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /vuce-zee-api-maestro
+    context-path: /vuce-zee-api-tesoreria
   port : 8081
 spring:
   datasource:
