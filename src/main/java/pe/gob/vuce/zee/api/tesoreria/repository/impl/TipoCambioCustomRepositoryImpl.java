@@ -10,6 +10,7 @@ import pe.gob.vuce.zee.api.tesoreria.repository.TipoCambioCustomRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,12 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
     private EntityManager em;
 
     @Override
-    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return busqueda(estado, activo,fechaInicio,fechaFin, -1, -1);
+    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo, BigDecimal cambioCompra, BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return busqueda(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin, -1, -1);
     }
 
     @Override
-    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(TipoCambioEntity.class);
         var tipoCambio = cq.from(TipoCambioEntity.class);
@@ -34,6 +35,12 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
 
         if (estado != null) {
             predicates.add(cb.equal(tipoCambio.get("estado"), estado));
+        }
+        if (cambioCompra != null) {
+            predicates.add(cb.equal(tipoCambio.get("cambioCompra"), cambioCompra));
+        }
+        if (cambioVenta != null) {
+            predicates.add(cb.equal(tipoCambio.get("cambioVenta"), cambioVenta));
         }
         if (!((fechaInicio == null) && (fechaFin == null))
         ) {
@@ -57,15 +64,15 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
     }
 
     @Override
-    public Page<TipoCambioEntity> busquedaPageable(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+    public Page<TipoCambioEntity> busquedaPageable(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
         var offset = pageable.getPageNumber() * pageable.getPageSize();
-        var resultList = busqueda(estado, activo,fechaInicio,fechaFin, offset, pageable.getPageSize());
-        var count = contar(estado, activo,fechaInicio,fechaFin);
+        var resultList = busqueda(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin, offset, pageable.getPageSize());
+        var count = contar(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin);
         return new PageImpl<>(resultList, pageable, count);
     }
 
     @Override
-    public Long contar(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public Long contar(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var tipoCambio = cq.from(TipoCambioEntity.class);
@@ -76,6 +83,12 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
 
         if (estado != null) {
             predicates.add(cb.equal(tipoCambio.get("estado"), estado));
+        }
+        if (cambioCompra != null) {
+            predicates.add(cb.equal(tipoCambio.get("cambioCompra"), cambioCompra));
+        }
+        if (cambioVenta != null) {
+            predicates.add(cb.equal(tipoCambio.get("cambioVenta"), cambioVenta));
         }
         if (!((fechaInicio == null) && (fechaFin == null))
         ) {

@@ -11,6 +11,7 @@ import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.TipoCambioRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -47,21 +48,21 @@ public class TipoCambioServiceImpl implements TipoCambioService {
 
 
     @Override
-    public Page<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
-        var result = tipoCambioRepository.busquedaPageable(estado,activo,fechaInicio,fechaFin,paginador);
+    public Page<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo, BigDecimal cambioCompra, BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
+        var result = tipoCambioRepository.busquedaPageable(estado,activo,cambioCompra,cambioVenta,fechaInicio,fechaFin,paginador);
         var resultDTO = result.stream().map(TipoCambioDTO::new).collect(Collectors.toList());
 
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
-    public List<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo, BigDecimal cambioCompra,BigDecimal cambioVenta,LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo, LocalDateTime fechaInicio, LocalDateTime fechaFin){
-        var result = tipoCambioRepository.busqueda(estado,activo,fechaInicio,fechaFin);
+    public List<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin){
+        var result = tipoCambioRepository.busqueda(estado,activo,cambioCompra,cambioVenta,fechaInicio,fechaFin);
         return result.stream().map(TipoCambioDTO::new).collect(Collectors.toList());
     }
 
