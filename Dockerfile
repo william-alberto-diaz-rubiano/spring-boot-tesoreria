@@ -1,7 +1,6 @@
 FROM openjdk:11
-RUN mkdir /opt/app
-COPY build/libs/*.jar /opt/app/japp.jar
-VOLUME /tmp
-EXPOSE 8081
-CMD ["-jar", "/opt/app/japp.jar"]
+COPY build/libs/vuce-*.jar /zee-api.jar
+CMD ["-jar", "/zee-api.jar"]
 ENTRYPOINT ["java"]
+EXPOSE 8081
+
