@@ -51,6 +51,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         if (!predicates.isEmpty()) {
             cq.where(predicatesArray);
         }
+        cq.orderBy(cb.desc(tipoCambio.get("fechaCreacion")));
 
         var result = em.createQuery(cq);
         if (offset != -1) {

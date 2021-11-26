@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
+import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 import pe.gob.vuce.zee.api.tesoreria.utils.FechasUtil;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
@@ -33,7 +34,6 @@ public class TipoCambioController {
     private TipoCambioService tipoCambioService;
 
 
-
     @GetMapping
     @ResponseBody
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
@@ -44,7 +44,6 @@ public class TipoCambioController {
             @RequestParam(name = "fechafin", required = false) String fechaFin,
             Pageable paginador) throws ParseException {
 
-        //compara si la fecha inicial es mayor a la final
         if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
             if (FechasUtil.compareDateInitialFinal(fechaInicio, fechaFin, formatoFecha)) {
                 ResponseDTO rpta = new ResponseDTO("error", "Fecha inicial no debe ser mayor a final");
@@ -54,16 +53,16 @@ public class TipoCambioController {
         LocalDateTime fechaInicioL = null;
         LocalDateTime fechaFinL = null;
 
-        // Dar formato fecha si valores son != a vacío
         if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
-            fechaInicioL = FechasUtil.getStringStartDate(fechaInicio,formatoFecha);
+            fechaInicioL = FechasUtil.getStringStartDate(fechaInicio, formatoFecha);
             fechaFinL = FechasUtil.getStringEndDate(fechaFin, formatoFecha);
         }
-        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado,0,cambioCompra,cambioVenta, fechaInicioL, fechaFinL, paginador);
-
+        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicioL, fechaFinL, paginador);
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
+
     }
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO> guardar(@RequestBody TipoCambioDTO tipoCambioDTO) {
@@ -132,7 +131,7 @@ public class TipoCambioController {
             }
 
         }
-        ResponseDTO responseBody = new ResponseDTO("success","Archivo generado exitosamente");
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        ResponseDTO responseBody = new ResponseDTO("ERROR","Archivo No generado");
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.BAD_REQUEST);
     }
 }
