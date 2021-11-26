@@ -1,4 +1,4 @@
-package pe.gob.vuce.zee.api.tesoreria.base;
+package pe.gob.vuce.zee.api.tesoreria.utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;

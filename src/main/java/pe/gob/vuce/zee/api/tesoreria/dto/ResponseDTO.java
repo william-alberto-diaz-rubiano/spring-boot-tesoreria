@@ -2,9 +2,7 @@ package pe.gob.vuce.zee.api.tesoreria.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import okhttp3.internal.http2.Http2Stream;
-import org.springframework.http.HttpStatus;
-import pe.gob.vuce.zee.api.tesoreria.base.FechasUtil;
+import pe.gob.vuce.zee.api.tesoreria.utils.FechasUtil;
 
 import java.util.Date;
 import java.util.List;
