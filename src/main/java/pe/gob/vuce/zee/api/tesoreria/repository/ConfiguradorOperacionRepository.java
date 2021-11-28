@@ -7,5 +7,5 @@ import pe.gob.vuce.zee.api.tesoreria.models.ConfiguradorOperacionEntity;
 import java.util.UUID;
 
 @Repository
-public interface ConfiguradorOperacionRepository extends JpaRepository<ConfiguradorOperacionEntity, UUID> {
+public interface ConfiguradorOperacionRepository extends JpaRepository<ConfiguradorOperacionEntity, UUID>, ConfiguradorOperacionCustomRepository {
 }

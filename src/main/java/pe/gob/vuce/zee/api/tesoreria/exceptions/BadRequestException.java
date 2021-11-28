@@ -1,16 +1,17 @@
 package pe.gob.vuce.zee.api.tesoreria.exceptions;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
-@Getter
-@Setter
-public class IdentityException extends RuntimeException{
+@Data
+@EqualsAndHashCode(callSuper=false)
+public class BadRequestException extends RuntimeException {
+
     private String code;
     private HttpStatus status;
 
-    public IdentityException(String message, String code, HttpStatus status) {
+    public BadRequestException(String code, HttpStatus status, String message) {
         super(message);
         this.code = code;
         this.status = status;

@@ -15,7 +15,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title("VUCE-ZEE-API-MAESTROS")
+                        .title("VUCE-ZEE-API-TESORERIA")
                         .description("Sistema Integrado de Gestión de Operaciones de las Zonas Económicas Especiales - ZEE")
                         //.termsOfService("terms")
                         .contact(new Contact().email("info@vuce.gob.pe"))

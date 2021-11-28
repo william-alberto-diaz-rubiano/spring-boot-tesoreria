@@ -45,11 +45,11 @@ public class ConfiguradorOperacionEntity {
     private LocalDateTime fechaCreacion;
 
     @Column(name = "vems_copr_usr_create",nullable = false)
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
 
     @Column(name = "vems_copr_dateupdate")
     private LocalDateTime fechaModificacion;
 
     @Column(name = "vems_copr_usr_update")
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 }

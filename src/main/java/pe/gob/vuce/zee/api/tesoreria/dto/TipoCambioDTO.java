@@ -1,5 +1,6 @@
 package pe.gob.vuce.zee.api.tesoreria.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class TipoCambioDTO {
 
     private UUID id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "La fecha de registro no puede ser nula")
     private Timestamp fechaRegistro;
 
@@ -33,8 +35,10 @@ public class TipoCambioDTO {
     private Integer organizacionId;
     private Integer estado;
     private Integer activo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
     private UUID usuarioCreacionId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaModificacion;
     private UUID usuarioModificacionId;
 

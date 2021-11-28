@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
-import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
+import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.utils.FechasUtil;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
@@ -16,11 +17,11 @@ import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
 import pe.gob.vuce.zee.api.tesoreria.utils.ExportarUtil;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -35,37 +36,34 @@ public class TipoCambioController {
 
 
     @GetMapping
-    @ResponseBody
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
             @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
             @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
-            @RequestParam(name = "fechainicio", required = false) String fechaInicio,
-            @RequestParam(name = "fechafin", required = false) String fechaFin,
-            Pageable paginador) throws ParseException {
+            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            Pageable paginador){
 
-        if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
-            if (FechasUtil.compareDateInitialFinal(fechaInicio, fechaFin, formatoFecha)) {
-                ResponseDTO rpta = new ResponseDTO("error", "Fecha inicial no debe ser mayor a final");
-                return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.BAD_REQUEST);
-            }
-        }
-        LocalDateTime fechaInicioL = null;
-        LocalDateTime fechaFinL = null;
+        System.out.println(fechaInicio);
+        System.out.println(fechaFin);
 
-        if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
-            fechaInicioL = FechasUtil.getStringStartDate(fechaInicio, formatoFecha);
-            fechaFinL = FechasUtil.getStringEndDate(fechaFin, formatoFecha);
+        if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
+
+           throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
         }
-        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicioL, fechaFinL, paginador);
+        if(fechaFin.compareTo(fechaInicio) < 0){
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
+        }
+        
+        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicio, fechaFin, paginador);
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
-
     }
 
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@RequestBody TipoCambioDTO tipoCambioDTO) {
+    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TipoCambioDTO tipoCambioDTO) {
+
         TipoCambioDTO nuevoTipoCambio = tipoCambioService.guardar(tipoCambioDTO);
         ResponseDTO responseBody = new ResponseDTO(nuevoTipoCambio,"success","Tipo de cambio creado",nuevoTipoCambio.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);

@@ -22,7 +22,7 @@ public class ConfiguradorOperacionDTO {
     private Integer estado;
     private Integer activo;
     private LocalDateTime fechaCreacion;
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
     private LocalDateTime fechaModificacion;
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 }
