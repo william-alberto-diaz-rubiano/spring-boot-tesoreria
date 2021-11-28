@@ -44,17 +44,17 @@ public class TipoCambioController {
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
             Pageable paginador){
 
-        System.out.println(fechaInicio);
-        System.out.println(fechaFin);
-
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
         }
-        if(fechaFin.compareTo(fechaInicio) < 0){
-            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
+        if(fechaInicio != null && fechaFin != null){
+
+            if(fechaFin.compareTo(fechaInicio) < 0){
+                throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
+            }
         }
-        
+
         Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicio, fechaFin, paginador);
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
