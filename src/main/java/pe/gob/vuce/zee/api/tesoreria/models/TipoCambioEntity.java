@@ -26,7 +26,7 @@ public class TipoCambioEntity {
     private UUID id;
 
     @Column(name = "vems_tcam_fecha_regs", nullable = false)
-    private Timestamp fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @Column(name = "vems_tcam_impo_compr",nullable = false,length = 10,scale = 2)
     private BigDecimal cambioCompra;

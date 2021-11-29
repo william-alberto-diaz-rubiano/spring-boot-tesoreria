@@ -18,9 +18,10 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<ErrorDTO> badRequestExceptionHandler(HttpServletRequest request, BadRequestException ex) {
-        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).path(request.getRequestURI()).statusValue(ex.getStatus().value()).message(ex.getMessage()).build();
+        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).path(request.getRequestURI()).statusValue(ex.getStatus().value()).errors(ex.getErrors()).message(ex.getMessage()).build();
         return new ResponseEntity<>(error, ex.getStatus());
     }
+
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ResponseDTO> handleEntityNotFound(EntityNotFoundException ex) {
@@ -37,5 +38,11 @@ public class ExceptionHandlerController {
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDTO> handleExceptions(Exception ex) {
+        var message = String.format("Excepción encontrada: %s - %s", ex.getCause(), ex.getMessage());
+        var responseBody = new ResponseDTO("ERROR", message);
+        return ResponseEntity.ok(responseBody);
+    }
 
 }

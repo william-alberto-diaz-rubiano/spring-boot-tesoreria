@@ -7,10 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
-import pe.gob.vuce.zee.api.tesoreria.utils.FechasUtil;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
@@ -23,6 +24,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,8 +43,8 @@ public class TipoCambioController {
             @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
             @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
-            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaInicio,
+            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
@@ -62,8 +65,16 @@ public class TipoCambioController {
 
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TipoCambioDTO tipoCambioDTO) {
+    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TipoCambioDTO tipoCambioDTO, BindingResult result) {
 
+        if(result.hasErrors()){
+
+            List<String> listaErrores = new ArrayList<>();
+            result.getFieldErrors()
+                    .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
+
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+        }
         TipoCambioDTO nuevoTipoCambio = tipoCambioService.guardar(tipoCambioDTO);
         ResponseDTO responseBody = new ResponseDTO(nuevoTipoCambio,"success","Tipo de cambio creado",nuevoTipoCambio.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
@@ -73,26 +84,23 @@ public class TipoCambioController {
     public ResponseEntity<ResponseDTO> exportarTipoCambio(@RequestParam(name = "estado", required = false) Integer estado,
                                    @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
                                    @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
-                                   @RequestParam(name = "fechainicio", required = false) String fechaInicio,
-                                   @RequestParam(name = "fechafin", required = false) String fechaFin,
+                                   @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaInicio,
+                                   @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
                                    HttpServletResponse response) {
 
-        if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
-            if (FechasUtil.compareDateInitialFinal(fechaInicio, fechaFin, formatoFecha)) {
-                ResponseDTO rpta = new ResponseDTO("error", "Fecha inicial no debe ser mayor a final");
-                return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.BAD_REQUEST);
+        if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
+
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
+        }
+        if(fechaInicio != null && fechaFin != null){
+
+            if(fechaFin.compareTo(fechaInicio) < 0){
+                throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
-        LocalDateTime fechaInicioL = null;
-        LocalDateTime fechaFinL = null;
 
-        if (!(fechaInicio.isEmpty() || fechaFin.isEmpty())) {
-            fechaInicioL = FechasUtil.getStringStartDate(fechaInicio, formato);
-            fechaFinL = FechasUtil.getStringEndDate(fechaFin, formato);
-        }
-
-        var listado = tipoCambioService.busquedaPorFiltros(estado, Constantes.HABILITADO, cambioCompra, cambioVenta, fechaInicioL, fechaFinL);
+        var listado = tipoCambioService.busquedaPorFiltros(estado, Constantes.HABILITADO, cambioCompra, cambioVenta, fechaInicio, fechaFin);
 
         String[] columnas = new String[]{"FECHA CREACION", "CAMBIO COMPRA", "CAMBIO VENTA", "ESTADO"};
 

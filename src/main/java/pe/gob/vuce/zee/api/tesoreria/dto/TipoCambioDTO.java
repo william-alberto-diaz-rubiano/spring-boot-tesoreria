@@ -20,15 +20,15 @@ import java.util.UUID;
 public class TipoCambioDTO {
 
     private UUID id;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     @NotNull(message = "La fecha de registro no puede ser nula")
-    private Timestamp fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @NotNull(message = "El cambio de compra no puede ser nulo")
-    @Digits(integer = 10, fraction = 2, message = "El valor debe ser de maximo 10 digitos y maximo 2 fraciones")
+    @Digits(integer = 10, fraction = 2, message = "El cambio de compra debe ser de maximo 10 digitos y maximo 2 fraciones")
     private BigDecimal cambioCompra;
 
-    @Digits(integer = 10, fraction = 2, message = "El valor debe ser de maximo 10 digitos y maximo 2 fraciones")
+    @Digits(integer = 10, fraction = 2, message = "El cambio de venta debe ser de maximo 10 digitos y maximo 2 fraciones")
     @NotNull(message = "El cambio de venta no puede ser nulo")
     private BigDecimal cambioVenta;
     private Integer clienteId;
