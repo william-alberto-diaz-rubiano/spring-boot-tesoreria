@@ -20,7 +20,7 @@ import java.util.UUID;
 public class TipoCambioDTO {
 
     private UUID id;
-    @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "La fecha de registro no puede ser nula")
     private LocalDateTime fechaRegistro;
 

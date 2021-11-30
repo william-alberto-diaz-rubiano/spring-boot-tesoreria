@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class TipoCambioServiceImpl implements TipoCambioService {
-
     @Autowired
     private TipoCambioRepository tipoCambioRepository;
 
@@ -41,10 +40,10 @@ public class TipoCambioServiceImpl implements TipoCambioService {
         List<TipoCambioDTO> listaPorEstado= busquedaPorFiltros(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"ACTIVO"), Constantes.HABILITADO,null,null,null,null);
 
         for(TipoCambioDTO tipoCambioDTO1 : listaPorEstado){
-           tipoCambioDTO1.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"INACTIVO"));
-           TipoCambioEntity tipoCambioEntity1 = modelMapper.map(tipoCambioDTO1, TipoCambioEntity.class);
+            tipoCambioDTO1.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"INACTIVO"));
+            TipoCambioEntity tipoCambioEntity1 = modelMapper.map(tipoCambioDTO1, TipoCambioEntity.class);
             tipoCambioRepository.save(tipoCambioEntity1);
-       }
+        }
 
         tipoCambioDTO.setActivo(Constantes.HABILITADO);
         tipoCambioDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"ACTIVO"));

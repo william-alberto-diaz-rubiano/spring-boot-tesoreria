@@ -8,7 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TipoCambioController {
 
-    private static final String formatoFecha="yyyy-MM-dd";
     @Autowired
     private TipoCambioService tipoCambioService;
 
@@ -43,8 +41,8 @@ public class TipoCambioController {
             @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
             @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
-            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaInicio,
-            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaFin,
+            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
+            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
@@ -81,11 +79,11 @@ public class TipoCambioController {
     }
 
     @GetMapping("/exportar")
-    public ResponseEntity<ResponseDTO> exportarTipoCambio(@RequestParam(name = "estado", required = false) Integer estado,
+    public void exportarTipoCambio(@RequestParam(name = "estado", required = false) Integer estado,
                                    @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
                                    @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
-                                   @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaInicio,
-                                   @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss") LocalDateTime fechaFin,
+                                   @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
+                                   @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
                                    HttpServletResponse response) {
 
@@ -137,7 +135,6 @@ public class TipoCambioController {
             }
 
         }
-        ResponseDTO responseBody = new ResponseDTO("ERROR","Archivo No generado");
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.BAD_REQUEST);
+        throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El tipo de extension ingresado no es correcto");
     }
 }

@@ -103,4 +103,5 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         var query = em.createQuery(cq);
         return query.getSingleResult();
     }
+
 }

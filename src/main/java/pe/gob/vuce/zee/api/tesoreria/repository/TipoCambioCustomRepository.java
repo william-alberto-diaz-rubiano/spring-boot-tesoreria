@@ -1,5 +1,6 @@
 package pe.gob.vuce.zee.api.tesoreria.repository;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
@@ -16,4 +17,6 @@ public interface TipoCambioCustomRepository {
     Page<TipoCambioEntity> busquedaPageable(Integer estado, Integer activo, BigDecimal cambioCompra,
                                             BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
     Long contar(Integer estado, Integer activo, BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+
 }
