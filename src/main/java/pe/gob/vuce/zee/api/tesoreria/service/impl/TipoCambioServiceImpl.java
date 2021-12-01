@@ -30,7 +30,9 @@ public class TipoCambioServiceImpl implements TipoCambioService {
 
     @Override
     public List<TipoCambioDTO> busquedaPorFiltros(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin){
+
         var result = tipoCambioRepository.busqueda(estado,activo,cambioCompra,cambioVenta,fechaInicio,fechaFin);
+
         return result.stream().map(TipoCambioDTO::new).collect(Collectors.toList());
     }
 

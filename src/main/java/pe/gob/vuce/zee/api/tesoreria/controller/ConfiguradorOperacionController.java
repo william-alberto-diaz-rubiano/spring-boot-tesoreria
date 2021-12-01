@@ -62,6 +62,25 @@ public class ConfiguradorOperacionController {
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{tramite}")
+    public ResponseEntity<ResponseDTO> modificar(@Valid
+                                                     @PathVariable("tramite") Integer tramite,
+                                                 @RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO,BindingResult result){
+        if(result.hasErrors()){
+
+            List<String> listaErrores = new ArrayList<>();
+            result.getFieldErrors()
+                    .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
+
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+        }
+
+        ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(tramite,configuradorOperacionDTO);
+
+        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador creado",modificarConfiguracion.getId());
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+    }
+
     @GetMapping("/exportar")
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
             @RequestParam(name = "estado", required = false) Integer estado,

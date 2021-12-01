@@ -13,6 +13,7 @@ import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
+import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
 import pe.gob.vuce.zee.api.tesoreria.utils.ExportarUtil;
 
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/tipoCambio")
 @Slf4j
 public class TipoCambioController {
+    private Integer estadoInteger;
 
     @Autowired
     private TipoCambioService tipoCambioService;
@@ -38,13 +40,23 @@ public class TipoCambioController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "estado", required = false) Integer estado,
+            @RequestParam(name = "estado", required = false) String estado,
             @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
             @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
             @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
+        if(estado.equals("Activo")){
+         estado= "1";
+         estadoInteger=Integer.parseInt(estado);
+        }
+
+        if(estado.equals("Inactivo")){
+            estado= "2";
+            estadoInteger=Integer.parseInt(estado);
+        }
+        
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
@@ -55,9 +67,10 @@ public class TipoCambioController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
+        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estadoInteger, 0, cambioCompra, cambioVenta, fechaInicio, fechaFin, paginador);
 
-        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicio, fechaFin, paginador);
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
+
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }
 
