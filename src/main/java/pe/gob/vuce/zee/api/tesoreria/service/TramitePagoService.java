@@ -5,12 +5,13 @@ import org.springframework.data.domain.Pageable;
 import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public interface TramitePagoService {
     TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO);
-    TramitePagoDTO modificar(String nombreTramite, TramitePagoDTO tramitePagoDTO);
-    Page<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador);
-    List<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size);
-    List<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    TramitePagoDTO modificar(UUID id, TramitePagoDTO tramitePagoDTO);
+    Page<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador);
+    List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size);
+    List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
 }

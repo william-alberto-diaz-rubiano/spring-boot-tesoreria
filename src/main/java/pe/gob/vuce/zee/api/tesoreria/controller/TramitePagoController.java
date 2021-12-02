@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
-import pe.gob.vuce.zee.api.tesoreria.dto.ConfiguradorOperacionDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
@@ -25,6 +24,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,9 +38,9 @@ public class TramitePagoController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "tipoTramite", required = false) Integer tipoTramite,
             @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
+            @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
@@ -55,7 +55,7 @@ public class TramitePagoController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
-        Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
+        Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(null,estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
 
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tramites de pago");
 
@@ -78,9 +78,9 @@ public class TramitePagoController {
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{nombreTramite}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                 @PathVariable("nombreTramite") String nombreTramite,
+                                                 @PathVariable("id") UUID id,
                                                  @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result){
         if(result.hasErrors()){
 
@@ -91,7 +91,7 @@ public class TramitePagoController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
-        TramitePagoDTO modificarTramitePago = tramitePagoService.modificar(nombreTramite, tramitePagoDTO);
+        TramitePagoDTO modificarTramitePago = tramitePagoService.modificar(id, tramitePagoDTO);
 
         ResponseDTO responseBody = new ResponseDTO(modificarTramitePago,"success","Informacion principal del tramite modificada",modificarTramitePago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
@@ -99,9 +99,10 @@ public class TramitePagoController {
 
     @GetMapping("/exportar")
     public void exportarTipoCambio(
-            @RequestParam(name = "estado", required = false) Integer estado,
+
             @RequestParam(name = "tipoTramite", required = false) Integer tipoTramite,
             @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
+            @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
@@ -118,7 +119,7 @@ public class TramitePagoController {
             }
         }
 
-        var listado = tramitePagoService.busquedaPorFiltros(estado, Constantes.HABILITADO, tipoTramite, nombreTramite, fechaInicio, fechaFin);
+        var listado = tramitePagoService.busquedaPorFiltros(null,estado, Constantes.HABILITADO, tipoTramite, nombreTramite, fechaInicio, fechaFin);
 
         String[] columnas = new String[]{"FECHA REGISTRO", "TIPO TRAMITE/CONCEPTOS", "CODIGO DEL SISTEMA","CODIGO","TRAMITE","BASE LEGAL","ESTADO"};
 

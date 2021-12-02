@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,9 +20,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,13 +35,11 @@ public class ConfiguradorOperacionController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "tramite", required = false) Integer tramite,
             @RequestParam(name = "operacion", required = false) Integer operacion,
-            @RequestParam(name = "fechacreacion", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaCreacion,
             Pageable paginador){
 
-        Page<ConfiguradorOperacionDTO> listaDTOPaginada = this.configuradorOperacionService.busquedaPorFiltros(estado, 0,tramite,operacion,fechaCreacion, paginador);
+        Page<ConfiguradorOperacionDTO> listaDTOPaginada = this.configuradorOperacionService.busquedaPorFiltros(null,null, 0,tramite,operacion,null, paginador);
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado del configurador de operaciones");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }
@@ -62,9 +59,9 @@ public class ConfiguradorOperacionController {
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{tramite}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                     @PathVariable("tramite") Integer tramite,
+                                                     @PathVariable("id") UUID id,
                                                  @RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO,BindingResult result){
         if(result.hasErrors()){
 
@@ -75,7 +72,7 @@ public class ConfiguradorOperacionController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
-        ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(tramite,configuradorOperacionDTO);
+        ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(id,configuradorOperacionDTO);
 
         ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador modificado",modificarConfiguracion.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
@@ -83,14 +80,12 @@ public class ConfiguradorOperacionController {
 
     @GetMapping("/exportar")
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "estado", required = false) Integer estado,
             @RequestParam(name = "tramite", required = false) Integer tramite,
             @RequestParam(name = "operacion", required = false) Integer operacion,
-            @RequestParam(name = "fechacreacion", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaCreacion,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response) {
 
-        var listado = configuradorOperacionService.busquedaPorFiltros(estado, Constantes.HABILITADO, tramite,operacion,fechaCreacion);
+        var listado = configuradorOperacionService.busquedaPorFiltros(null,null, Constantes.HABILITADO, tramite,operacion,null);
 
         String[] columnas = new String[]{"FECHA CREACION", "TRAMITE", "OPERACION", "ESTADO"};
 
@@ -98,7 +93,7 @@ public class ConfiguradorOperacionController {
                 x.getFechaCreacion().toString(),
                 Constantes.TIPO_TRAMITES.get(x.getTramite()),
                 Constantes.OPERACIONES.get(x.getOperacion()),
-                Constantes.ESTADOS_TIPO_CAMBIO.get(x.getEstado()),
+                Constantes.ESTADOS_CONFIGURADOR.get(x.getEstado()),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";
         if (formato.equalsIgnoreCase("xls") || formato.equalsIgnoreCase("xlsx")) {

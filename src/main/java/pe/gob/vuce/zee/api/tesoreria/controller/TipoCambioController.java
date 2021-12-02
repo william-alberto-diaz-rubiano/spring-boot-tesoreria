@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +38,6 @@ public class TipoCambioController {
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
             @RequestParam(name = "estado", required = false) Integer estado,
-            @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
-            @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
             @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
@@ -55,7 +52,7 @@ public class TipoCambioController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
-        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, cambioCompra, cambioVenta, fechaInicio, fechaFin, paginador);
+        Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, null, null, fechaInicio, fechaFin, paginador);
 
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
 
@@ -81,8 +78,6 @@ public class TipoCambioController {
 
     @GetMapping("/exportar")
     public void exportarTipoCambio(@RequestParam(name = "estado", required = false) Integer estado,
-                                   @RequestParam(name = "cambiocompra", required = false) BigDecimal cambioCompra,
-                                   @RequestParam(name = "cambioventa", required = false) BigDecimal cambioVenta,
                                    @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
                                    @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
@@ -99,7 +94,7 @@ public class TipoCambioController {
             }
         }
 
-        var listado = tipoCambioService.busquedaPorFiltros(estado, Constantes.HABILITADO, cambioCompra, cambioVenta, fechaInicio, fechaFin);
+        var listado = tipoCambioService.busquedaPorFiltros(estado, Constantes.HABILITADO, null,null, fechaInicio, fechaFin);
 
         String[] columnas = new String[]{"FECHA CREACION", "CAMBIO COMPRA", "CAMBIO VENTA", "ESTADO"};
 

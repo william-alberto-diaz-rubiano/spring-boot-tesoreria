@@ -9,11 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.ConfiguradorOperacionDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.ConfiguradorOperacionEntity;
-import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.ConfiguradorOperacionRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.ConfiguradorOperacionService;
 
@@ -34,14 +32,14 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     private ModelMapper modelMapper;
 
     @Override
-    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
-        var result = configuradorOperacionRepository.busqueda(estado,activo,tramite,operacion,fechaCreacion);
+    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
+        var result = configuradorOperacionRepository.busqueda(id,estado,activo,tramite,operacion,fechaCreacion);
         return result.stream().map(ConfiguradorOperacionDTO::new).collect(Collectors.toList());
     }
 
     @Override
     public ConfiguradorOperacionDTO guardar(ConfiguradorOperacionDTO configuradorOperacionDTO) {
-        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,configuradorOperacionDTO.getTramite(),null,null);
+        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,null,configuradorOperacionDTO.getTramite(),null,null);
 
         if(!listaPorTramiteConcepto.isEmpty()){
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"El tipo de tramite/concepto ya se encuentra registrado");
@@ -62,11 +60,12 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     }
 
     @Override
-    public ConfiguradorOperacionDTO modificar(Integer tramite,ConfiguradorOperacionDTO configuradorOperacionDTO) {
+    public ConfiguradorOperacionDTO modificar(UUID id,ConfiguradorOperacionDTO configuradorOperacionDTO) {
 
         ConfiguradorOperacionEntity configuradorOperacionEntity = null;
 
-        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null, null,tramite,null,null);
+        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(id,null, null,null,null,null);
+
         if(listaPorTramiteConcepto.isEmpty()){
             throw new EntityNotFoundException("El tipo de tramite o concepto ingresado no existe");
         }else{
@@ -87,15 +86,15 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     }
 
     @Override
-    public Page<ConfiguradorOperacionDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, Pageable paginador) {
-        var result = configuradorOperacionRepository.busquedaPageable(estado,activo,tramite,operacion,fechaCreacion,paginador);
+    public Page<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, Pageable paginador) {
+        var result = configuradorOperacionRepository.busquedaPageable(id,estado,activo,tramite,operacion,fechaCreacion,paginador);
         var resultDTO = result.stream().map(ConfiguradorOperacionDTO::new).collect(Collectors.toList());
 
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
-    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, int offset, int size) {
+    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, int offset, int size) {
         return Collections.emptyList();
     }
 

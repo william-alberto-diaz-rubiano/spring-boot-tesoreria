@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOperacionCustomRepository {
     @PersistenceContext
@@ -20,12 +21,12 @@ public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOp
 
 
     @Override
-    public List<ConfiguradorOperacionEntity> busqueda(Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
-        return busqueda(estado,activo, tramite, operacion,fechaCreacion,-1,-1 );
+    public List<ConfiguradorOperacionEntity> busqueda(UUID id, Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
+        return busqueda(id,estado,activo, tramite, operacion,fechaCreacion,-1,-1 );
     }
 
     @Override
-    public List<ConfiguradorOperacionEntity> busqueda(Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion, int offset, int size) {
+    public List<ConfiguradorOperacionEntity> busqueda(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion, int offset, int size) {
 
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(ConfiguradorOperacionEntity.class);
@@ -33,6 +34,9 @@ public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOp
         Predicate[] predicatesArray;
         var predicates = new ArrayList<Predicate>();
 
+        if (id != null) {
+            predicates.add(cb.equal(root.get("id"), id));
+        }
         if (estado != null) {
             predicates.add(cb.equal(root.get("estado"), estado));
         }
@@ -63,15 +67,15 @@ public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOp
     }
 
     @Override
-    public Page<ConfiguradorOperacionEntity> busquedaPageable(Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion, Pageable pageable) {
+    public Page<ConfiguradorOperacionEntity> busquedaPageable(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion, Pageable pageable) {
         var offset = pageable.getPageNumber() * pageable.getPageSize();
-        var resultList = busqueda(estado,activo, tramite, operacion,fechaCreacion, offset,pageable.getPageSize());
-        var count = contar(estado, activo,tramite,operacion,fechaCreacion);
+        var resultList = busqueda(id,estado,activo, tramite, operacion,fechaCreacion, offset,pageable.getPageSize());
+        var count = contar(id,estado, activo,tramite,operacion,fechaCreacion);
         return new PageImpl<>(resultList, pageable, count);
     }
 
     @Override
-    public Long contar(Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
+    public Long contar(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var root = cq.from(ConfiguradorOperacionEntity.class);
@@ -79,6 +83,10 @@ public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOp
         cq.select(cb.count(root));
         Predicate[] predicatesArray;
         var predicates = new ArrayList<Predicate>();
+
+        if (id != null) {
+            predicates.add(cb.equal(root.get("id"), id));
+        }
 
         if (estado != null) {
             predicates.add(cb.equal(root.get("estado"), estado));

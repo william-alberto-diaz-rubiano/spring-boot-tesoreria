@@ -17,6 +17,7 @@ import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,11 +39,11 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     }
 
     @Override
-    public TramitePagoDTO modificar(String nombreTramite, TramitePagoDTO tramitePagoDTO) {
+    public TramitePagoDTO modificar(UUID id, TramitePagoDTO tramitePagoDTO) {
 
         TramitePagoEntity tramitePagoEntity = null;
 
-        List<TramitePagoDTO> listaPorNombreTramite = busquedaPorFiltros(null, null, null, nombreTramite, null, null);
+        List<TramitePagoDTO> listaPorNombreTramite = busquedaPorFiltros(id,null, null, null, null, null, null);
         if (listaPorNombreTramite.isEmpty()) {
             throw new EntityNotFoundException("El nombre de tramite ingresado no existe");
         } else {
@@ -68,21 +69,21 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     }
 
     @Override
-    public Page<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
-        var result = tramitePagoRepository.busquedaPageable(estado, activo, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
+    public Page<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
+        var result = tramitePagoRepository.busquedaPageable(id,estado, activo, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
         var resultDTO = result.stream().map(TramitePagoDTO::new).collect(Collectors.toList());
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
-    public List<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 
-        var result = tramitePagoRepository.busqueda(estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
+        var result = tramitePagoRepository.busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
         return result.stream().map(TramitePagoDTO::new).collect(Collectors.toList());
     }
 
     @Override
-    public List<TramitePagoDTO> busquedaPorFiltros(Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
         return Collections.emptyList();
     }
 }

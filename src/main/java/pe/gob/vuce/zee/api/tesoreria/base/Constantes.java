@@ -17,10 +17,15 @@ public class Constantes {
     public final static Map<Integer, String> ESTADOS_TIPO_CAMBIO = new HashMap<Integer, String>();
     public final static Map<Integer, String> TIPO_TRAMITES = new HashMap<Integer, String>();
     public final static Map<Integer, String> OPERACIONES = new HashMap<Integer, String>();
+    public final static Map<Integer, String> ESTADOS_CONFIGURADOR = new HashMap<Integer, String>();
 
     static {
         ESTADOS_TIPO_CAMBIO.put(1, "ACTIVO");
         ESTADOS_TIPO_CAMBIO.put(2, "INACTIVO");
+    }
+    static {
+        ESTADOS_CONFIGURADOR.put(1, "ACTIVO");
+        ESTADOS_CONFIGURADOR.put(2, "INACTIVO");
     }
 
     static {

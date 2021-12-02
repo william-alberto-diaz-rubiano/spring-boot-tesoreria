@@ -7,10 +7,11 @@ import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public interface TramitePagoCustomRepository {
-    List<TramitePagoEntity> busqueda(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
-    List<TramitePagoEntity> busqueda(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin,int offset, int size);
-    Page<TramitePagoEntity> busquedaPageable(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
-    Long contar(Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<TramitePagoEntity> busqueda(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<TramitePagoEntity> busqueda(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin,int offset, int size);
+    Page<TramitePagoEntity> busquedaPageable(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
+    Long contar(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 }
