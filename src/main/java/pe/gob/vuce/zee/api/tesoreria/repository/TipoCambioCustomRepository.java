@@ -18,5 +18,4 @@ public interface TipoCambioCustomRepository {
                                             BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
     Long contar(Integer estado, Integer activo, BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
-
 }

@@ -82,7 +82,6 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
             }
 
           }
-        System.out.println(configuradorOperacionEntity);
 
         return modelMapper.map(configuradorOperacionEntity, ConfiguradorOperacionDTO.class);
     }

@@ -77,7 +77,7 @@ public class ConfiguradorOperacionController {
 
         ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(tramite,configuradorOperacionDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador creado",modificarConfiguracion.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador modificado",modificarConfiguracion.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -97,8 +97,7 @@ public class ConfiguradorOperacionController {
         var rowDataList = listado.stream().map(x -> new String[]{
                 x.getFechaCreacion().toString(),
                 Constantes.TIPO_TRAMITES.get(x.getTramite()),
-                Constantes.TIPO_TRAMITES.get(x.getTramite()),
-                x.getOperacion().toString(),
+                Constantes.OPERACIONES.get(x.getOperacion()),
                 Constantes.ESTADOS_TIPO_CAMBIO.get(x.getEstado()),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";

@@ -7,5 +7,5 @@ import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
 import java.util.UUID;
 
 @Repository
-public interface TramitePagoRepository extends JpaRepository<TramitePagoEntity, UUID> {
+public interface TramitePagoRepository extends JpaRepository<TramitePagoEntity, UUID>,TramitePagoCustomRepository {
 }
