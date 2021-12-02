@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
@@ -31,6 +32,11 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
     @Override
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
+        tramitePagoDTO.setActivo(Constantes.HABILITADO);
+        tramitePagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO"));
+
+
+
 
         TramitePagoEntity tramitePagoEntity = modelMapper.map(tramitePagoDTO, TramitePagoEntity.class);
         tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);

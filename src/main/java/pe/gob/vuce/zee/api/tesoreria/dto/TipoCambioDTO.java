@@ -9,7 +9,6 @@ import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

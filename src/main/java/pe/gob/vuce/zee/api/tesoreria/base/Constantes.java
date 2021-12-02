@@ -18,6 +18,7 @@ public class Constantes {
     public final static Map<Integer, String> TIPO_TRAMITES = new HashMap<Integer, String>();
     public final static Map<Integer, String> OPERACIONES = new HashMap<Integer, String>();
     public final static Map<Integer, String> ESTADOS_CONFIGURADOR = new HashMap<Integer, String>();
+    public final static Map<Integer, String> ESTADOS_TRAMITE_PAGO = new HashMap<Integer, String>();
 
     static {
         ESTADOS_TIPO_CAMBIO.put(1, "ACTIVO");
@@ -37,6 +38,11 @@ public class Constantes {
         OPERACIONES.put(1, "NO GRAVADA");
         OPERACIONES.put(2, "GRAVADA");
         OPERACIONES.put(3,"OPCIONAL");
+    }
+    static {
+        ESTADOS_TRAMITE_PAGO.put(1, "ACTIVO");
+        ESTADOS_TRAMITE_PAGO.put(2, "INACTIVO");
+        ESTADOS_TRAMITE_PAGO.put(3,"GUARDADO");
     }
 
     public static <K, V> K getSingleKeyFromValue(Map<K, V> map, V value) {
