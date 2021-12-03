@@ -56,12 +56,12 @@ public class AccionPagoEntity {
     private LocalDateTime fechaCreacion;
 
     @Column(name = "vepg_acci_usr_create",nullable = false)
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
 
     @Column(name = "vepg_acci_dateupdate")
     private LocalDateTime fechaModificacion;
 
     @Column(name = "vepg_acci_usr_update")
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 
 }
