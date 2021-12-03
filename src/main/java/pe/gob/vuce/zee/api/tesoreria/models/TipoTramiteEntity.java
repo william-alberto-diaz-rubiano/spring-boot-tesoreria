@@ -80,11 +80,11 @@ public class TipoTramiteEntity {
     private LocalDateTime fechaCreacion;
 
     @Column(name = "vepg_tram_usr_create",nullable = false)
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
 
     @Column(name = "vepg_tram_dateupdate")
     private LocalDateTime fechaModificacion;
 
     @Column(name = "vepg_tram_usr_update")
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 }

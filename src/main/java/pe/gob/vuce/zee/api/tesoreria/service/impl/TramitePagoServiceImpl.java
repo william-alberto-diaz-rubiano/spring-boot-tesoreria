@@ -32,12 +32,15 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
     @Override
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
+
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
         tramitePagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO"));
-
-
-
-
+        tramitePagoDTO.setClienteId(1);
+        tramitePagoDTO.setOrganizacionId(1);
+        tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
+        tramitePagoDTO.setFechaCreacion(LocalDateTime.now());
+        tramitePagoDTO.setFechaModificacion(LocalDateTime.now());
+        tramitePagoDTO.setUsuarioModificacionId(UUID.randomUUID());
         TramitePagoEntity tramitePagoEntity = modelMapper.map(tramitePagoDTO, TramitePagoEntity.class);
         tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
 

@@ -46,10 +46,10 @@ public class TramitePagoDTO {
     private Integer activo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaModificacion;
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 
     public TramitePagoDTO(TramitePagoEntity tramitePagoEntity){
         this.id = tramitePagoEntity.getId();
