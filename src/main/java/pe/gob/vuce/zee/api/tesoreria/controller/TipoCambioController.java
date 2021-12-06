@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,14 +38,11 @@ public class TipoCambioController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "estado", required = false) Integer estado,
+            @RequestParam(name = "estado", required = false) UUID estado,
             @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
-        if(estado == 0){
-            estado=null;
-        }
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
@@ -80,15 +78,12 @@ public class TipoCambioController {
     }
 
     @GetMapping("/exportar")
-    public void exportarTipoCambio(@RequestParam(name = "estado", required = false) Integer estado,
+    public void exportarTipoCambio(@RequestParam(name = "estado", required = false) UUID estado,
                                    @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
                                    @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
                                    HttpServletResponse response) {
 
-        if(estado == 0){
-            estado=null;
-        }
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
@@ -109,7 +104,7 @@ public class TipoCambioController {
                 x.getFechaCreacion().toString(),
                 x.getCambioCompra().toString(),
                 x.getCambioVenta().toString(),
-                Constantes.ESTADOS_TIPO_CAMBIO.get(x.getEstado()),
+                x.getEstadoDescripcion(),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";
         if (formato.equalsIgnoreCase("xls") || formato.equalsIgnoreCase("xlsx")) {

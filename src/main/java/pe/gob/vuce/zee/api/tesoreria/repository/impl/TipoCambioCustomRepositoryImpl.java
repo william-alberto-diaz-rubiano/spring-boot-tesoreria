@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepository {
@@ -21,12 +22,12 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
     private EntityManager em;
 
     @Override
-    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo, BigDecimal cambioCompra, BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public List<TipoCambioEntity> busqueda(UUID estado, Integer activo, BigDecimal cambioCompra, BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         return busqueda(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin, -1, -1);
     }
 
     @Override
-    public List<TipoCambioEntity> busqueda(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TipoCambioEntity> busqueda(UUID estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(TipoCambioEntity.class);
         var tipoCambio = cq.from(TipoCambioEntity.class);
@@ -34,7 +35,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         var predicates = new ArrayList<Predicate>();
 
         if (estado != null) {
-            predicates.add(cb.equal(tipoCambio.get("estado"), estado));
+            predicates.add(cb.equal(tipoCambio.get("estado").get("id"), estado));
         }
         if (cambioCompra != null) {
             predicates.add(cb.equal(tipoCambio.get("cambioCompra"), cambioCompra));
@@ -65,7 +66,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
     }
 
     @Override
-    public Page<TipoCambioEntity> busquedaPageable(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+    public Page<TipoCambioEntity> busquedaPageable(UUID estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
         var offset = pageable.getPageNumber() * pageable.getPageSize();
         var resultList = busqueda(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin, offset, pageable.getPageSize());
         var count = contar(estado, activo,cambioCompra,cambioVenta,fechaInicio,fechaFin);
@@ -73,7 +74,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
     }
 
     @Override
-    public Long contar(Integer estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public Long contar(UUID estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var tipoCambio = cq.from(TipoCambioEntity.class);
@@ -83,7 +84,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         var predicates = new ArrayList<Predicate>();
 
         if (estado != null) {
-            predicates.add(cb.equal(tipoCambio.get("estado"), estado));
+            predicates.add(cb.equal(tipoCambio.get("estado").get("id"), estado));
         }
         if (cambioCompra != null) {
             predicates.add(cb.equal(tipoCambio.get("cambioCompra"), cambioCompra));

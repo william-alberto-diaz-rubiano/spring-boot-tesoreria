@@ -23,11 +23,13 @@ public class ConfiguradorOperacionEntity {
     @GeneratedValue(generator = "UUIDGenerator")
     private UUID id;
 
-    @Column(name = "vems_copr_cod_tipotr", nullable = false)
-    private Integer tramite;
+    @ManyToOne
+    @JoinColumn(name = "vems_copr_cod_tipotr",referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity tramite;
 
-    @Column(name = "vems_copr_cod_tipoop",nullable = false)
-    private Integer operacion;
+    @ManyToOne
+    @JoinColumn(name = "vems_copr_cod_tipoop", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity operacion;
 
     @Column(name = "vems_copr_cliente_fk", nullable = false)
     private Integer clienteId;
@@ -35,8 +37,9 @@ public class ConfiguradorOperacionEntity {
     @Column(name = "vems_copr_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vems_copr_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vems_copr_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
     @Column(name = "vems_copr_cod_active",nullable = false)
     private Integer activo;

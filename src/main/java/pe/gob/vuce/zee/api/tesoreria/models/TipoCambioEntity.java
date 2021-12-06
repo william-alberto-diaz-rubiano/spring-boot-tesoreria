@@ -40,8 +40,9 @@ public class TipoCambioEntity {
     @Column(name = "vems_tcam_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vems_tcam_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vems_tcam_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
     @Column(name = "vems_tcam_cod_active",nullable = false)
     private Integer activo;

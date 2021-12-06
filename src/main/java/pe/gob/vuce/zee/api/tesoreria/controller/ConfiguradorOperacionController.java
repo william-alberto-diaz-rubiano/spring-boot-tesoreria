@@ -35,11 +35,12 @@ public class ConfiguradorOperacionController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "tramite", required = false) Integer tramite,
-            @RequestParam(name = "operacion", required = false) Integer operacion,
+            @RequestParam(name = "tramite", required = false) UUID tramite,
+            @RequestParam(name = "operacion", required = false) UUID operacion,
             Pageable paginador){
 
-        Page<ConfiguradorOperacionDTO> listaDTOPaginada = this.configuradorOperacionService.busquedaPorFiltros(null,null, 0,tramite,operacion,null, paginador);
+        Page<ConfiguradorOperacionDTO> listaDTOPaginada = this.configuradorOperacionService.busquedaPorFiltros(null,null, 0,tramite,operacion,paginador);
+
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado del configurador de operaciones");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }
@@ -80,20 +81,20 @@ public class ConfiguradorOperacionController {
 
     @GetMapping("/exportar")
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "tramite", required = false) Integer tramite,
-            @RequestParam(name = "operacion", required = false) Integer operacion,
+            @RequestParam(name = "tramite", required = false) UUID tramite,
+            @RequestParam(name = "operacion", required = false) UUID operacion,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response) {
 
-        var listado = configuradorOperacionService.busquedaPorFiltros(null,null, Constantes.HABILITADO, tramite,operacion,null);
+        var listado = configuradorOperacionService.busquedaPorFiltros(null,null, Constantes.HABILITADO, tramite,operacion);
 
         String[] columnas = new String[]{"FECHA CREACION", "TRAMITE", "OPERACION", "ESTADO"};
 
         var rowDataList = listado.stream().map(x -> new String[]{
                 x.getFechaCreacion().toString(),
-                Constantes.TIPO_TRAMITES.get(x.getTramite()),
-                Constantes.OPERACIONES.get(x.getOperacion()),
-                Constantes.ESTADOS_CONFIGURADOR.get(x.getEstado()),
+                x.getTramiteDescripcion(),
+                x.getOperacionDescripcion(),
+                x.getEstadoDescripcion(),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";
         if (formato.equalsIgnoreCase("xls") || formato.equalsIgnoreCase("xlsx")) {

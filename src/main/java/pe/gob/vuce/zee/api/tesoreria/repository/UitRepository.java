@@ -6,4 +6,5 @@ import pe.gob.vuce.zee.api.tesoreria.models.UitEntity;
 import java.util.UUID;
 
 public interface UitRepository extends JpaRepository<UitEntity, UUID> {
+    UitEntity findByAnioUit(String anio);
 }

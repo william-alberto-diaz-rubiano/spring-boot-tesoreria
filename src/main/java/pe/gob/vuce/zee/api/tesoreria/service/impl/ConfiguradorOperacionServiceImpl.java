@@ -32,19 +32,20 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     private ModelMapper modelMapper;
 
     @Override
-    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion, LocalDateTime fechaCreacion) {
-        var result = configuradorOperacionRepository.busqueda(id,estado,activo,tramite,operacion,fechaCreacion);
-        return result.stream().map(ConfiguradorOperacionDTO::new).collect(Collectors.toList());
+    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tramite, UUID operacion) {
+        var result = configuradorOperacionRepository.busqueda(id,estado,activo,tramite,operacion);
+        return result.stream().map(x -> modelMapper.map(x, ConfiguradorOperacionDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public ConfiguradorOperacionDTO guardar(ConfiguradorOperacionDTO configuradorOperacionDTO) {
-        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,null,configuradorOperacionDTO.getTramite(),null,null);
+
+        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,null,configuradorOperacionDTO.getTramiteId(),null);
 
         if(!listaPorTramiteConcepto.isEmpty()){
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"El tipo de tramite/concepto ya se encuentra registrado");
         }
-        configuradorOperacionDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"ACTIVO"));
+        configuradorOperacionDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_CONFIGURADOR,"ACTIVO")));
         configuradorOperacionDTO.setActivo(Constantes.HABILITADO);
         configuradorOperacionDTO.setClienteId(1);
         configuradorOperacionDTO.setOrganizacionId(1);
@@ -64,15 +65,15 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
 
         ConfiguradorOperacionEntity configuradorOperacionEntity = null;
 
-        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(id,null, null,null,null,null);
+        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(id,null, null,null,null);
 
         if(listaPorTramiteConcepto.isEmpty()){
             throw new EntityNotFoundException("El tipo de tramite o concepto ingresado no existe");
         }else{
             for(ConfiguradorOperacionDTO configuradorOperacionDTO1 : listaPorTramiteConcepto){
-                if(configuradorOperacionDTO1.getEstado() == 1){
-                    configuradorOperacionDTO1.setTramite(configuradorOperacionDTO.getTramite());
-                    configuradorOperacionDTO1.setOperacion(configuradorOperacionDTO.getOperacion());
+                if(configuradorOperacionDTO1.getEstadoDescripcion() == "ACTIVO"){
+                    configuradorOperacionDTO1.setTramiteId(configuradorOperacionDTO.getTramiteId());
+                    configuradorOperacionDTO1.setOperacionId(configuradorOperacionDTO.getOperacionId());
                     configuradorOperacionEntity = modelMapper.map(configuradorOperacionDTO1, ConfiguradorOperacionEntity.class);
                     configuradorOperacionEntity = configuradorOperacionRepository.save(configuradorOperacionEntity);
                 }else{
@@ -86,17 +87,16 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     }
 
     @Override
-    public Page<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, Pageable paginador) {
-        var result = configuradorOperacionRepository.busquedaPageable(id,estado,activo,tramite,operacion,fechaCreacion,paginador);
+    public Page<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo,UUID tramite, UUID operacion, Pageable paginador) {
+        var result = configuradorOperacionRepository.busquedaPageable(id,estado,activo,tramite,operacion,paginador);
 
-        
-        var resultDTO = result.stream().map(ConfiguradorOperacionDTO::new).collect(Collectors.toList());
+        var resultDTO = result.stream().map(x -> modelMapper.map(x, ConfiguradorOperacionDTO.class)).collect(Collectors.toList());
 
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
-    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, int offset, int size) {
+    public List<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo,UUID tramite,UUID operacion,int offset, int size) {
         return Collections.emptyList();
     }
 

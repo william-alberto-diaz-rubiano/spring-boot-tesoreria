@@ -14,19 +14,19 @@ public class Constantes {
     public static String CONTENT_TYPE_XLSX = "application/vnd.ms-excel";
     public static String CONTENT_TYPE_CSV = "text/csv";
 
-    public final static Map<Integer, String> ESTADOS_TIPO_CAMBIO = new HashMap<Integer, String>();
+    public final static Map<String, String> ESTADOS_TIPO_CAMBIO = new HashMap<String, String>();
     public final static Map<Integer, String> TIPO_TRAMITES = new HashMap<Integer, String>();
     public final static Map<Integer, String> OPERACIONES = new HashMap<Integer, String>();
-    public final static Map<Integer, String> ESTADOS_CONFIGURADOR = new HashMap<Integer, String>();
+    public final static Map<String, String> ESTADOS_CONFIGURADOR = new HashMap<String, String>();
     public final static Map<Integer, String> ESTADOS_TRAMITE_PAGO = new HashMap<Integer, String>();
 
     static {
-        ESTADOS_TIPO_CAMBIO.put(1, "ACTIVO");
-        ESTADOS_TIPO_CAMBIO.put(2, "INACTIVO");
+        ESTADOS_TIPO_CAMBIO.put("a2749d39-f219-8110-15ea-5749cbbab39a", "ACTIVO");
+        ESTADOS_TIPO_CAMBIO.put("c5781785-66b3-2012-0178-02178be96a46", "INACTIVO");
     }
     static {
-        ESTADOS_CONFIGURADOR.put(1, "ACTIVO");
-        ESTADOS_CONFIGURADOR.put(2, "INACTIVO");
+        ESTADOS_CONFIGURADOR.put("fb34b1dd-3af5-205b-3517-5720338bb33f", "ACTIVO");
+        ESTADOS_CONFIGURADOR.put("789c5d18-cac5-681e-9d65-9280e3065340", "INACTIVO");
     }
 
     static {
