@@ -39,7 +39,6 @@ public class TramitePagoDTO {
     @Size(max = 50,message = "La base legal soporta maximo 50 caracteres")
     private String baseLegal;
     private Integer diazPlazo;
-    private boolean tipoAccionPago;
     private Integer clienteId;
     private Integer organizacionId;
     private Integer estado;
@@ -61,7 +60,6 @@ public class TramitePagoDTO {
         this.nombrePago = tramitePagoEntity.getNombrePago();
         this.baseLegal = tramitePagoEntity.getBaseLegal();
         this.diazPlazo = tramitePagoEntity.getDiazPlazo();
-        this.tipoAccionPago = tramitePagoEntity.isTipoAccionPago();
         this.clienteId = tramitePagoEntity.getClienteId();
         this.organizacionId = tramitePagoEntity.getOrganizacionId();
         this.estado = tramitePagoEntity.getEstado();
@@ -83,7 +81,6 @@ public class TramitePagoDTO {
         entity.setNombrePago(this.nombrePago);
         entity.setBaseLegal(this.baseLegal);
         entity.setDiazPlazo(this.diazPlazo);
-        entity.setTipoAccionPago(this.tipoAccionPago);
         entity.setClienteId(this.clienteId);
         entity.setOrganizacionId(this.organizacionId);
         entity.setEstado(this.estado);

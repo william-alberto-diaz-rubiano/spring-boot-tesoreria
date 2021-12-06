@@ -65,7 +65,6 @@ public class TramitePagoServiceImpl implements TramitePagoService {
                     tramitePagoDTO1.setNombrePago(tramitePagoDTO.getNombrePago());
                     tramitePagoDTO1.setBaseLegal(tramitePagoDTO.getBaseLegal());
                     tramitePagoDTO1.setDiazPlazo(tramitePagoDTO.getDiazPlazo());
-                    tramitePagoDTO1.setTipoAccionPago(tramitePagoDTO.isTipoAccionPago());
                     tramitePagoEntity = modelMapper.map(tramitePagoDTO1, TramitePagoEntity.class);
                     tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
                 } else {

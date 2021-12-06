@@ -49,9 +49,6 @@ public class TramitePagoEntity {
     @Column(name = "vepg_tram_dias_plazo",nullable = false)
     private Integer diazPlazo;
 
-    @Column(name = "vepg_tram_id_pacc_fk", nullable = false)
-    private boolean tipoAccionPago;
-
     @Column(name = "vepg_tram_cliente_fk",nullable = false)
     private Integer clienteId;
 

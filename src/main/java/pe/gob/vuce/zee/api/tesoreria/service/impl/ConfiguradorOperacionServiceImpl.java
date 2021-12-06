@@ -88,6 +88,8 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     @Override
     public Page<ConfiguradorOperacionDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tramite, Integer operacion,LocalDateTime fechaCreacion, Pageable paginador) {
         var result = configuradorOperacionRepository.busquedaPageable(id,estado,activo,tramite,operacion,fechaCreacion,paginador);
+
+        
         var resultDTO = result.stream().map(ConfiguradorOperacionDTO::new).collect(Collectors.toList());
 
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
