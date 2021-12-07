@@ -20,7 +20,6 @@ public class ConfiguradorOperacionCustomRepositoryImpl implements ConfiguradorOp
     private EntityManager em;
 
 
-
     @Override
     public List<ConfiguradorOperacionEntity> busqueda(UUID id, UUID estado, Integer activo, UUID tramite,UUID operacion) {
         return busqueda(id,estado,activo, tramite, operacion,-1,-1 );

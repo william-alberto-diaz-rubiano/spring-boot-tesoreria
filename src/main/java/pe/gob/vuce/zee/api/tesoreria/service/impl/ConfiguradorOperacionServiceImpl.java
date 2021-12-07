@@ -67,15 +67,21 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
 
         List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(id,null, null,null,null);
 
+
         if(listaPorTramiteConcepto.isEmpty()){
             throw new EntityNotFoundException("El tipo de tramite o concepto ingresado no existe");
         }else{
             for(ConfiguradorOperacionDTO configuradorOperacionDTO1 : listaPorTramiteConcepto){
-                if(configuradorOperacionDTO1.getEstadoDescripcion() == "ACTIVO"){
+
+                if(configuradorOperacionDTO1.getEstadoDescripcion().equals("ACTIVO") ){
                     configuradorOperacionDTO1.setTramiteId(configuradorOperacionDTO.getTramiteId());
                     configuradorOperacionDTO1.setOperacionId(configuradorOperacionDTO.getOperacionId());
+                    configuradorOperacionDTO1.setEstadoDescripcion(null);
+                    configuradorOperacionDTO1.setTramiteDescripcion(null);
+                    configuradorOperacionDTO1.setOperacionDescripcion(null);
                     configuradorOperacionEntity = modelMapper.map(configuradorOperacionDTO1, ConfiguradorOperacionEntity.class);
                     configuradorOperacionEntity = configuradorOperacionRepository.save(configuradorOperacionEntity);
+
                 }else{
                     throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tramite o concepto se encuentra en estado Inactivo");
                 }
