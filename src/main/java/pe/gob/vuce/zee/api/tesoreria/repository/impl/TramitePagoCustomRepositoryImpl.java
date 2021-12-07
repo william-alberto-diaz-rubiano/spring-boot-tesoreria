@@ -22,12 +22,12 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
     private EntityManager em;
 
     @Override
-    public List<TramitePagoEntity> busqueda(UUID id, Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public List<TramitePagoEntity> busqueda(UUID id, UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         return busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin,-1,-1);
     }
 
     @Override
-    public List<TramitePagoEntity> busqueda(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TramitePagoEntity> busqueda(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
 
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(TramitePagoEntity.class);
@@ -39,10 +39,10 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
             predicates.add(cb.equal(root.get("id"), id));
         }
         if (estado != null) {
-            predicates.add(cb.equal(root.get("estado"), estado));
+            predicates.add(cb.equal(root.get("estado").get("id"), estado));
         }
         if (tipoTramite != null) {
-            predicates.add(cb.equal(root.get("configuradorOperacion"), tipoTramite));
+            predicates.add(cb.equal(root.get("configuradorOperacion").get("id"), tipoTramite));
         }
         if (nombreTramite != null) {
             predicates.add(cb.equal(root.get("nombrePago"), nombreTramite));
@@ -70,7 +70,7 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
     }
 
     @Override
-    public Page<TramitePagoEntity> busquedaPageable(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+    public Page<TramitePagoEntity> busquedaPageable(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
         var offset = pageable.getPageNumber() * pageable.getPageSize();
         var resultList =busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin,offset,pageable.getPageSize());
         var count =contar(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
@@ -78,7 +78,7 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
     }
 
     @Override
-    public Long contar(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public Long contar(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var root = cq.from(TramitePagoEntity.class);
@@ -91,10 +91,10 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
             predicates.add(cb.equal(root.get("id"), id));
         }
         if (estado != null) {
-            predicates.add(cb.equal(root.get("estado"), estado));
+            predicates.add(cb.equal(root.get("estado").get("id"), estado));
         }
         if (tipoTramite != null) {
-            predicates.add(cb.equal(root.get("configuradorOperacion"), tipoTramite));
+            predicates.add(cb.equal(root.get("configuradorOperacion").get("id"), tipoTramite));
         }
         if (nombreTramite != null) {
             predicates.add(cb.equal(root.get("nombrePago"), nombreTramite));

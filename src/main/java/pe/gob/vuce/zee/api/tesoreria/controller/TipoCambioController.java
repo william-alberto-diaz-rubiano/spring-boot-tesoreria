@@ -21,7 +21,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +55,7 @@ public class TipoCambioController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
+
         Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, null, null, fechaInicio, fechaFin, paginador);
 
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
@@ -95,6 +98,7 @@ public class TipoCambioController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
+
 
         var listado = tipoCambioService.busquedaPorFiltros(estado, Constantes.HABILITADO, null,null, fechaInicio, fechaFin);
 

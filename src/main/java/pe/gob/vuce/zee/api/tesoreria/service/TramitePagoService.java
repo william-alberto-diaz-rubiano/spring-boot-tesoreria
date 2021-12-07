@@ -10,8 +10,8 @@ import java.util.UUID;
 public interface TramitePagoService {
     TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO);
     TramitePagoDTO modificar(UUID id, TramitePagoDTO tramitePagoDTO);
-    Page<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador);
-    List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size);
-    List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    Page<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador);
+    List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size);
+    List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
 }

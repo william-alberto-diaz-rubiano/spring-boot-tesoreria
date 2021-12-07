@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pe.gob.vuce.zee.api.tesoreria.dto.ConfiguradorOperacionDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
 import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.TipoCambioRepository;
@@ -14,7 +13,9 @@ import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,20 @@ public class TipoCambioServiceImpl implements TipoCambioService {
     @Override
     public List<TipoCambioDTO> busquedaPorFiltros(UUID estado, Integer activo,BigDecimal cambioCompra,BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin){
 
+
+        if(fechaInicio != null && fechaFin != null){
+
+            LocalTime horaInicio = LocalTime.of(00,00,00);
+            LocalTime horaFin = LocalTime.of(23,59,59);
+
+            LocalDate fechaInicioDate = fechaInicio.toLocalDate();
+            LocalDate fechaFinDate = fechaFin.toLocalDate();
+
+            fechaInicio = LocalDateTime.of(fechaInicioDate,horaInicio);
+            fechaFin = LocalDateTime.of(fechaFinDate,horaFin);
+        }
+
+
         var result = tipoCambioRepository.busqueda(estado,activo,cambioCompra,cambioVenta,fechaInicio,fechaFin);
 
         return result.stream().map(x -> modelMapper.map(x, TipoCambioDTO.class)).collect(Collectors.toList());
@@ -45,7 +60,6 @@ public class TipoCambioServiceImpl implements TipoCambioService {
         System.out.println(listaPorEstado);
 
         for(TipoCambioDTO tipoCambioDTO1 : listaPorEstado){
-
             tipoCambioDTO1.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"INACTIVO")));
             tipoCambioDTO1.setEstadoDescripcion(null);
 
@@ -76,6 +90,19 @@ public class TipoCambioServiceImpl implements TipoCambioService {
 
     @Override
     public Page<TipoCambioDTO> busquedaPorFiltros(UUID estado, Integer activo, BigDecimal cambioCompra, BigDecimal cambioVenta, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
+
+        if(fechaInicio != null && fechaFin != null){
+
+            LocalTime horaInicio = LocalTime.of(00,00,00);
+            LocalTime horaFin = LocalTime.of(23,59,59);
+
+            LocalDate fechaInicioDate = fechaInicio.toLocalDate();
+            LocalDate fechaFinDate = fechaFin.toLocalDate();
+
+            fechaInicio = LocalDateTime.of(fechaInicioDate,horaInicio);
+            fechaFin = LocalDateTime.of(fechaFinDate,horaFin);
+        }
+
         var result = tipoCambioRepository.busquedaPageable(estado,activo,cambioCompra,cambioVenta,fechaInicio,fechaFin,paginador);
 
         var resultDTO = result.stream().map(x -> modelMapper.map(x, TipoCambioDTO.class)).collect(Collectors.toList());

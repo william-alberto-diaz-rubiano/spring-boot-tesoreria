@@ -34,7 +34,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
 
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
-        tramitePagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO"));
+        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO")));
         tramitePagoDTO.setClienteId(1);
         tramitePagoDTO.setOrganizacionId(1);
         tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
@@ -57,14 +57,17 @@ public class TramitePagoServiceImpl implements TramitePagoService {
             throw new EntityNotFoundException("El nombre de tramite ingresado no existe");
         } else {
             for (TramitePagoDTO tramitePagoDTO1 : listaPorNombreTramite) {
-                if (tramitePagoDTO1.getEstado() == 1) {
+
+                if (tramitePagoDTO1.getEstadoDescripcion().equals("ACTIVO")) {
                     tramitePagoDTO1.setConfiguradorOperacion(tramitePagoDTO.getConfiguradorOperacion());
-                    tramitePagoDTO1.setCodigoProceso(tramitePagoDTO.getCodigoProceso());
+                    tramitePagoDTO1.setCodigoProcesoId(tramitePagoDTO.getCodigoProcesoId());
                     tramitePagoDTO1.setFlagDestinos(tramitePagoDTO.isFlagDestinos());
                     tramitePagoDTO1.setCodigoPago(tramitePagoDTO.getCodigoPago());
                     tramitePagoDTO1.setNombrePago(tramitePagoDTO.getNombrePago());
                     tramitePagoDTO1.setBaseLegal(tramitePagoDTO.getBaseLegal());
                     tramitePagoDTO1.setDiazPlazo(tramitePagoDTO.getDiazPlazo());
+                    tramitePagoDTO1.setEstadoDescripcion(null);
+                    tramitePagoDTO1.setCodigoProcesoDescripcion(null);
                     tramitePagoEntity = modelMapper.map(tramitePagoDTO1, TramitePagoEntity.class);
                     tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
                 } else {
@@ -77,21 +80,21 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     }
 
     @Override
-    public Page<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
+    public Page<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
         var result = tramitePagoRepository.busquedaPageable(id,estado, activo, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
-        var resultDTO = result.stream().map(TramitePagoDTO::new).collect(Collectors.toList());
+        var resultDTO = result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
-    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 
         var result = tramitePagoRepository.busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
-        return result.stream().map(TramitePagoDTO::new).collect(Collectors.toList());
+        return result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,Integer estado, Integer activo, Integer tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
+    public List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
         return Collections.emptyList();
     }
 }

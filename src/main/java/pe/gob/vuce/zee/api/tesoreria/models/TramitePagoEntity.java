@@ -31,8 +31,9 @@ public class TramitePagoEntity {
     @Column(name = "vepg_tram_cod_sistem",nullable = false, length = 20)
     private String codigoSistema;
 
-    @Column(name = "vepg_tram_cod_proces", nullable = false)
-    private Integer codigoProceso;
+    @ManyToOne
+    @JoinColumn(name = "vepg_tram_cod_proces", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoProceso;
 
     @Column(name = "vepg_tram_flag_destn", nullable = false)
     private boolean flagDestinos;
@@ -55,8 +56,9 @@ public class TramitePagoEntity {
     @Column(name = "vepg_tram_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vepg_tram_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vepg_tram_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
     @Column(name = "vepg_tram_cod_active",nullable = false)
     private Integer activo;

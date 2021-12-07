@@ -38,9 +38,9 @@ public class TramitePagoController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "tipoTramite", required = false) Integer tipoTramite,
+            @RequestParam(name = "tipoTramite", required = false) UUID tipoTramite,
             @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
-            @RequestParam(name = "estado", required = false) Integer estado,
+            @RequestParam(name = "estado", required = false) UUID estado,
             @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
@@ -100,17 +100,13 @@ public class TramitePagoController {
     @GetMapping("/exportar")
     public void exportarTipoCambio(
 
-            @RequestParam(name = "tipoTramite", required = false) Integer tipoTramite,
+            @RequestParam(name = "tipoTramite", required = false) UUID tipoTramite,
             @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
-            @RequestParam(name = "estado", required = false) Integer estado,
+            @RequestParam(name = "estado", required = false) UUID estado,
             @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response){
-
-        if(estado == 0){
-            estado=null;
-        }
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
@@ -134,7 +130,7 @@ public class TramitePagoController {
                 x.getCodigoPago(),
                 x.getNombrePago(),
                 x.getBaseLegal(),
-                Constantes.ESTADOS_TIPO_CAMBIO.get(x.getEstado()),
+                x.getEstadoDescripcion(),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";
         if (formato.equalsIgnoreCase("xls") || formato.equalsIgnoreCase("xlsx")) {

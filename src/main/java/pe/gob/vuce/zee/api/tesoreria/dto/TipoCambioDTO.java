@@ -40,9 +40,25 @@ public class TipoCambioDTO {
     private Integer activo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
+
     private UUID usuarioCreacionId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaModificacion;
     private UUID usuarioModificacionId;
+
+    @JsonFormat(pattern = "yyyy")
+    public LocalDateTime getAnio(){
+        return fechaRegistro;
+    }
+
+    @JsonFormat(pattern = "MM")
+    public LocalDateTime getMes(){
+        return fechaRegistro;
+    }
+
+    @JsonFormat(pattern = "dd")
+    public LocalDateTime getDia(){
+        return fechaRegistro;
+    }
 
 }

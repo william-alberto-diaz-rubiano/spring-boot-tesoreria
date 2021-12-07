@@ -27,7 +27,7 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public TipoTramiteDTO guardar(TipoTramiteDTO tipoTramiteDTO) {
 
-        tipoTramiteDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO"));
+        //tipoTramiteDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO"));
         tipoTramiteDTO.setActivo(Constantes.HABILITADO);
         tipoTramiteDTO.setClienteId(1);
         tipoTramiteDTO.setOrganizacionId(1);
@@ -50,9 +50,9 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
         if(tipoTramiteModificar == null){
             throw new EntityNotFoundException("El tipo de tramite no existe");
         }
-        if(tipoTramiteModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO")){
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tipo tramite no se encuentra en estado guardado");
-        }
+        //if(tipoTramiteModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO")){
+          //  throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tipo tramite no se encuentra en estado guardado");
+        //}
         tipoTramiteModificar.setTipoCalculo(tipoTramiteDTO.getTipoCalculo());
         tipoTramiteModificar.setCodigoDestino(tipoTramiteDTO.getCodigoDestino());
         tipoTramiteModificar.setCodigoMoneda(tipoTramiteDTO.getCodigoMoneda());

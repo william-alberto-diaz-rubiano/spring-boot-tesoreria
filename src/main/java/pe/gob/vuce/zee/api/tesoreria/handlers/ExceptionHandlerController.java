@@ -42,7 +42,7 @@ public class ExceptionHandlerController {
     public ResponseEntity<ResponseDTO> handleExceptions(Exception ex) {
         var message = String.format("Excepción encontrada: %s - %s", ex.getCause(), ex.getMessage());
         var responseBody = new ResponseDTO("ERROR", message);
-        return ResponseEntity.ok(responseBody);
+        return new ResponseEntity<ResponseDTO>(responseBody,HttpStatus.BAD_REQUEST);
     }
 
 }

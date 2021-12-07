@@ -27,7 +27,7 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public AccionPagoDTO guardar(AccionPagoDTO accionPagoDTO) {
 
-        accionPagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO"));
+        //accionPagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO"));
         accionPagoDTO.setActivo(Constantes.HABILITADO);
         accionPagoDTO.setClienteId(1);
         accionPagoDTO.setOrganizacionId(1);
@@ -50,9 +50,9 @@ public class AccionPagoServiceImpl implements AccionPagoService {
         if(accionPagoModificar == null){
             throw new EntityNotFoundException("El tipo de tramite no existe");
         }
-        if(accionPagoModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")){
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, la Accion de pago no se encuentra en estado activo");
-        }
+        //if(accionPagoModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")){
+          //  throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, la Accion de pago no se encuentra en estado activo");
+        //}
         accionPagoModificar.setCodigoModulo(accionPagoDTO.getCodigoModulo());
         accionPagoModificar.setCodigoProceso(accionPagoDTO.getCodigoProceso());
         accionPagoModificar.setCodigoFormulario(accionPagoDTO.getCodigoFormulario());
