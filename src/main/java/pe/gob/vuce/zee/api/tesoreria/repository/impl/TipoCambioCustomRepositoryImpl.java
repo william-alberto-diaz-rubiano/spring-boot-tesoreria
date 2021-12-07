@@ -45,14 +45,14 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         }
         if (!((fechaInicio == null) && (fechaFin == null))
         ) {
-            predicates.add(cb.between(tipoCambio.get("fechaCreacion"), fechaInicio, fechaFin));
+            predicates.add(cb.between(tipoCambio.get("fechaRegistro"), fechaInicio, fechaFin));
         }
 
         predicatesArray = predicates.toArray(new Predicate[0]);
         if (!predicates.isEmpty()) {
             cq.where(predicatesArray);
         }
-        cq.orderBy(cb.desc(tipoCambio.get("fechaCreacion")));
+        cq.orderBy(cb.desc(tipoCambio.get("fechaRegistro")));
 
         var result = em.createQuery(cq);
         if (offset != -1) {
@@ -94,7 +94,7 @@ public class TipoCambioCustomRepositoryImpl implements TipoCambioCustomRepositor
         }
         if (!((fechaInicio == null) && (fechaFin == null))
         ) {
-            predicates.add(cb.between(tipoCambio.get("fechaCreacion"), fechaInicio, fechaFin));
+            predicates.add(cb.between(tipoCambio.get("fechaRegistro"), fechaInicio, fechaFin));
         }
 
         predicatesArray = predicates.toArray(new Predicate[0]);

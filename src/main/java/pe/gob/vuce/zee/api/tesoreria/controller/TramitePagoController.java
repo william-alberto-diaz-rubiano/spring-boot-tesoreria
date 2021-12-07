@@ -38,12 +38,24 @@ public class TramitePagoController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "tipoTramite", required = false) UUID tipoTramite,
-            @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
+            @RequestParam(name = "tipotramite", required = false) UUID tipoTramite,
+            @RequestParam(name = "nombretramite", required = false) String nombreTramite,
             @RequestParam(name = "estado", required = false) UUID estado,
-            @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
-            @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
+            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
+            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
+
+        System.out.println("controller");
+        System.out.println(estado);
+        System.out.println(tipoTramite);
+        System.out.println(nombreTramite);
+        System.out.println(fechaFin);
+        System.out.println(fechaInicio);
+        System.out.println("");
+
+        if(nombreTramite.equals("")){
+            nombreTramite=null;
+        }
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 

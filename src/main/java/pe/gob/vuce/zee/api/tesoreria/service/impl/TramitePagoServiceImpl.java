@@ -15,7 +15,9 @@ import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.TramitePagoRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -33,14 +35,18 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     @Override
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
 
+        tramitePagoDTO.getConfiguradorOperacion().setTramiteDescripcion(null);
+        tramitePagoDTO.getConfiguradorOperacion().setOperacionDescripcion(null);
+        tramitePagoDTO.getConfiguradorOperacion().setEstadoDescripcion(null);
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
-        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO")));
+        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"INACTIVO")));
         tramitePagoDTO.setClienteId(1);
         tramitePagoDTO.setOrganizacionId(1);
         tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
         tramitePagoDTO.setFechaCreacion(LocalDateTime.now());
         tramitePagoDTO.setFechaModificacion(LocalDateTime.now());
         tramitePagoDTO.setUsuarioModificacionId(UUID.randomUUID());
+
         TramitePagoEntity tramitePagoEntity = modelMapper.map(tramitePagoDTO, TramitePagoEntity.class);
         tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
 
@@ -59,7 +65,10 @@ public class TramitePagoServiceImpl implements TramitePagoService {
             for (TramitePagoDTO tramitePagoDTO1 : listaPorNombreTramite) {
 
                 if (tramitePagoDTO1.getEstadoDescripcion().equals("ACTIVO")) {
-                    tramitePagoDTO1.setConfiguradorOperacion(tramitePagoDTO.getConfiguradorOperacion());
+
+                    tramitePagoDTO1.getConfiguradorOperacion().setTramiteDescripcion(null);
+                    tramitePagoDTO1.getConfiguradorOperacion().setOperacionDescripcion(null);
+                    tramitePagoDTO1.getConfiguradorOperacion().setEstadoDescripcion(null);
                     tramitePagoDTO1.setCodigoProcesoId(tramitePagoDTO.getCodigoProcesoId());
                     tramitePagoDTO1.setFlagDestinos(tramitePagoDTO.isFlagDestinos());
                     tramitePagoDTO1.setCodigoPago(tramitePagoDTO.getCodigoPago());
@@ -68,6 +77,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
                     tramitePagoDTO1.setDiazPlazo(tramitePagoDTO.getDiazPlazo());
                     tramitePagoDTO1.setEstadoDescripcion(null);
                     tramitePagoDTO1.setCodigoProcesoDescripcion(null);
+
                     tramitePagoEntity = modelMapper.map(tramitePagoDTO1, TramitePagoEntity.class);
                     tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
                 } else {
@@ -81,14 +91,40 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
     @Override
     public Page<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador) {
+
+        if(fechaInicio != null && fechaFin != null){
+
+            LocalTime horaInicio = LocalTime.of(00,00,10);
+            LocalTime horaFin = LocalTime.of(23,59,59);
+
+            LocalDate fechaInicioDate = fechaInicio.toLocalDate();
+            LocalDate fechaFinDate = fechaFin.toLocalDate();
+
+            fechaInicio = LocalDateTime.of(fechaInicioDate,horaInicio);
+            fechaFin = LocalDateTime.of(fechaFinDate,horaFin);
+        }
+
         var result = tramitePagoRepository.busquedaPageable(id,estado, activo, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
         var resultDTO = result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
+        System.out.println("service");
+        System.out.println(resultDTO);
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
     @Override
     public List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 
+        if(fechaInicio != null && fechaFin != null){
+
+            LocalTime horaInicio = LocalTime.of(00,00,00);
+            LocalTime horaFin = LocalTime.of(23,59,59);
+
+            LocalDate fechaInicioDate = fechaInicio.toLocalDate();
+            LocalDate fechaFinDate = fechaFin.toLocalDate();
+
+            fechaInicio = LocalDateTime.of(fechaInicioDate,horaInicio);
+            fechaFin = LocalDateTime.of(fechaFinDate,horaFin);
+        }
         var result = tramitePagoRepository.busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
         return result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
     }

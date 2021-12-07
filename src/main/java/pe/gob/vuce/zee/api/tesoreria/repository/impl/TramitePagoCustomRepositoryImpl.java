@@ -29,6 +29,14 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
     @Override
     public List<TramitePagoEntity> busqueda(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
 
+        System.out.println("repository");
+        System.out.println(id);
+        System.out.println(estado);
+        System.out.println(tipoTramite);
+        System.out.println(nombreTramite);
+        System.out.println(fechaFin);
+        System.out.println(fechaInicio);
+
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(TramitePagoEntity.class);
         var root = cq.from(TramitePagoEntity.class);
@@ -42,7 +50,7 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
             predicates.add(cb.equal(root.get("estado").get("id"), estado));
         }
         if (tipoTramite != null) {
-            predicates.add(cb.equal(root.get("configuradorOperacion").get("id"), tipoTramite));
+            predicates.add(cb.equal(root.get("configuradorOperacion").get("tramite").get("id"), tipoTramite));
         }
         if (nombreTramite != null) {
             predicates.add(cb.equal(root.get("nombrePago"), nombreTramite));
@@ -65,6 +73,8 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
         if (size != -1) {
             result = result.setMaxResults(size);
         }
+        System.out.println("repo");
+        System.out.println(result.getResultList());
         return result.getResultList();
 
     }
@@ -74,6 +84,8 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
         var offset = pageable.getPageNumber() * pageable.getPageSize();
         var resultList =busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin,offset,pageable.getPageSize());
         var count =contar(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
+        System.out.println("pageable repo");
+        System.out.println(resultList);
         return new PageImpl<>(resultList, pageable, count);
     }
 
@@ -94,7 +106,7 @@ public class TramitePagoCustomRepositoryImpl implements TramitePagoCustomReposit
             predicates.add(cb.equal(root.get("estado").get("id"), estado));
         }
         if (tipoTramite != null) {
-            predicates.add(cb.equal(root.get("configuradorOperacion").get("id"), tipoTramite));
+            predicates.add(cb.equal(root.get("configuradorOperacion").get("tramite").get("id"), tipoTramite));
         }
         if (nombreTramite != null) {
             predicates.add(cb.equal(root.get("nombrePago"), nombreTramite));
