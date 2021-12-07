@@ -61,16 +61,13 @@ public class ConfiguradorOperacionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                     @PathVariable("id") UUID id,
-                                                 @RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO,BindingResult result){
-        if(result.hasErrors()){
+    public ResponseEntity<ResponseDTO> modificar(@PathVariable("id") UUID id,@RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO){
 
-            List<String> listaErrores = new ArrayList<>();
-            result.getFieldErrors()
-                    .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
-
-            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+        if( configuradorOperacionDTO.getOperacionId() == null){
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El campo de operacionid no puede ser nulo");
+        }
+        if( configuradorOperacionDTO.getTramiteId() == null){
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El campo tramiteid no puede ser nulo");
         }
 
         ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(id,configuradorOperacionDTO);
@@ -78,6 +75,7 @@ public class ConfiguradorOperacionController {
         ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador modificado",modificarConfiguracion.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
+
 
     @GetMapping("/exportar")
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
