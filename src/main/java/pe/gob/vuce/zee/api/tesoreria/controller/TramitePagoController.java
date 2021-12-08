@@ -45,14 +45,6 @@ public class TramitePagoController {
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
-        System.out.println("controller");
-        System.out.println(estado);
-        System.out.println(tipoTramite);
-        System.out.println(nombreTramite);
-        System.out.println(fechaFin);
-        System.out.println(fechaInicio);
-        System.out.println("");
-
         if(nombreTramite.equals("")){
             nombreTramite=null;
         }
@@ -120,6 +112,7 @@ public class TramitePagoController {
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response){
 
+
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
@@ -137,7 +130,7 @@ public class TramitePagoController {
 
         var rowDataList = listado.stream().map(x -> new String[]{
                 x.getFechaCreacion().toString(),
-                x.getConfiguradorOperacion().toString(),
+                x.getConfiguradorOperacion().getTramiteDescripcion(),
                 x.getCodigoSistema(),
                 x.getCodigoPago(),
                 x.getNombrePago(),

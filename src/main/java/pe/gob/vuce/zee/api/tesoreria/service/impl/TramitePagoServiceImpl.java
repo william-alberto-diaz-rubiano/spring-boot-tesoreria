@@ -106,8 +106,6 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
         var result = tramitePagoRepository.busquedaPageable(id,estado, activo, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
         var resultDTO = result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
-        System.out.println("service");
-        System.out.println(resultDTO);
         return new PageImpl<>(resultDTO, paginador, result.getTotalElements());
     }
 
