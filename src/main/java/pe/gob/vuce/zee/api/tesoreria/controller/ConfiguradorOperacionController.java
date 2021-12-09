@@ -72,7 +72,7 @@ public class ConfiguradorOperacionController {
 
         ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(id,configuradorOperacionDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"success","Configurador modificado",modificarConfiguracion.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"Configurador modificado","success",modificarConfiguracion.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 

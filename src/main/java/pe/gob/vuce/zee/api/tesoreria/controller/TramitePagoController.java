@@ -78,7 +78,7 @@ public class TramitePagoController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
         TramitePagoDTO nuevoTramitePago = tramitePagoService.guardar(tramitePagoDTO);
-        ResponseDTO responseBody = new ResponseDTO(nuevoTramitePago,"success","Informacion principal guardada",nuevoTramitePago.getId());
+        ResponseDTO responseBody = new ResponseDTO(nuevoTramitePago,"Informacion principal guardada","success",nuevoTramitePago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -97,7 +97,7 @@ public class TramitePagoController {
 
         TramitePagoDTO modificarTramitePago = tramitePagoService.modificar(id, tramitePagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramitePago,"success","Informacion principal del tramite modificada",modificarTramitePago.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarTramitePago,"Informacion principal del tramite modificada","success",modificarTramitePago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -167,6 +167,21 @@ public class TramitePagoController {
         throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El tipo de extension ingresado no es correcto");
 
     }
+    @PatchMapping("/{id}/{nuevoEstado}")
+    public ResponseEntity<ResponseDTO> modificarEstado(@PathVariable("id") UUID id,@PathVariable("nuevoEstado") UUID nuevoEstado){
+
+        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(id, nuevoEstado);
+
+        ResponseDTO responseBody = new ResponseDTO(modificarTramiteEstado,"Informacion principal del tramite modificada","success",modificarTramiteEstado.getId());
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+    }
+
+    @GetMapping("/codigoSistema")
+     public ResponseEntity<ResponseDTO> codigoSistema(){
+        String codigo = tramitePagoService.codigoSistema();
+         ResponseDTO responseBody = new ResponseDTO("success",codigo,"Codigo del sistema");
+         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+     }
 }
 
 

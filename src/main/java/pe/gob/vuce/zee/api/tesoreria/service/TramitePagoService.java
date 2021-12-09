@@ -13,5 +13,6 @@ public interface TramitePagoService {
     Page<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable paginador);
     List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size);
     List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite,String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin);
-
+    TramitePagoDTO modificarEstado(UUID id, UUID nuevoEstado);
+    String codigoSistema();
 }

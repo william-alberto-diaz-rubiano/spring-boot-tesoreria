@@ -64,17 +64,23 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     @Override
     public ConfiguradorOperacionDTO modificar(UUID id,ConfiguradorOperacionDTO configuradorOperacionDTO) {
 
+
         ConfiguradorOperacionEntity configuradorOperacionEntity = null;
 
-        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(id,null, null,null,null);
+        List<ConfiguradorOperacionDTO> listaConfigurador= busquedaPorFiltros(id,null, null,null,null);
+
+        List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,null,configuradorOperacionDTO.getTramiteId(),null);
 
 
-        if(listaPorTramiteConcepto.isEmpty()){
-            throw new EntityNotFoundException("El tipo de tramite o concepto ingresado no existe");
-        }else{
-            for(ConfiguradorOperacionDTO configuradorOperacionDTO1 : listaPorTramiteConcepto){
+        if(listaConfigurador.isEmpty()){
+            throw new EntityNotFoundException("El configurador de operaciones no existe");
+        }
 
-                if(configuradorOperacionDTO1.getEstadoDescripcion().equals("ACTIVO") ){
+        ConfiguradorOperacionDTO configuradorOperacionDTO1 = listaConfigurador.get(0);
+
+            if(configuradorOperacionDTO1.getEstadoDescripcion().equals("ACTIVO") ){
+
+                if((listaPorTramiteConcepto.isEmpty()) || configuradorOperacionDTO1.getTramiteId().equals(configuradorOperacionDTO.getTramiteId())){
                     configuradorOperacionDTO1.setTramiteId(configuradorOperacionDTO.getTramiteId());
                     configuradorOperacionDTO1.setOperacionId(configuradorOperacionDTO.getOperacionId());
                     configuradorOperacionDTO1.setEstadoDescripcion(null);
@@ -82,14 +88,13 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
                     configuradorOperacionDTO1.setOperacionDescripcion(null);
                     configuradorOperacionEntity = modelMapper.map(configuradorOperacionDTO1, ConfiguradorOperacionEntity.class);
                     configuradorOperacionEntity = configuradorOperacionRepository.save(configuradorOperacionEntity);
-
                 }else{
-                    throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tramite o concepto se encuentra en estado Inactivo");
+                    throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"Ya se encuentra registrado un configurador de operaciones con el tipo de tramite/concepto ingresado");
                 }
-            }
 
-          }
-
+            }else{
+                throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el configurador se encuentra en estado Inactivo");
+                }
         return modelMapper.map(configuradorOperacionEntity, ConfiguradorOperacionDTO.class);
     }
 

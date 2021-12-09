@@ -18,9 +18,7 @@ import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +37,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
         tramitePagoDTO.getConfiguradorOperacion().setOperacionDescripcion(null);
         tramitePagoDTO.getConfiguradorOperacion().setEstadoDescripcion(null);
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
-        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"INACTIVO")));
+        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO")));
         tramitePagoDTO.setClienteId(1);
         tramitePagoDTO.setOrganizacionId(1);
         tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
@@ -60,7 +58,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
         List<TramitePagoDTO> listaPorNombreTramite = busquedaPorFiltros(id,null, null, null, null, null, null);
         if (listaPorNombreTramite.isEmpty()) {
-            throw new EntityNotFoundException("El nombre de tramite ingresado no existe");
+            throw new EntityNotFoundException("El tramite de pago ingresado no existe");
         } else {
             for (TramitePagoDTO tramitePagoDTO1 : listaPorNombreTramite) {
 
@@ -126,6 +124,56 @@ public class TramitePagoServiceImpl implements TramitePagoService {
         var result = tramitePagoRepository.busqueda(id,estado,activo,tipoTramite,nombreTramite,fechaInicio,fechaFin);
         return result.stream().map(x -> modelMapper.map(x, TramitePagoDTO.class)).collect(Collectors.toList());
     }
+
+    @Override
+    public TramitePagoDTO modificarEstado(UUID id, UUID nuevoEstado) {
+
+        List<TramitePagoDTO> listadoTramitePago = busquedaPorFiltros(id,null, null, null, null, null, null);
+
+        if (listadoTramitePago.isEmpty()) {
+            throw new EntityNotFoundException("El tramite id del pago ingresado no existe");
+        }
+        TramitePagoDTO tramitePago = listadoTramitePago.get(0);
+        UUID estadoGuardado = tramitePago.getEstadoId();
+        if(estadoGuardado.equals(nuevoEstado)){
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "No se puede realizar el cambio de estado, el estado actual y el estado ingresado son el mismo");
+        }
+
+        tramitePago.setEstadoId(nuevoEstado);
+        tramitePago.getConfiguradorOperacion().setTramiteDescripcion(null);
+        tramitePago.getConfiguradorOperacion().setOperacionDescripcion(null);
+        tramitePago.getConfiguradorOperacion().setEstadoDescripcion(null);
+        tramitePago.setEstadoDescripcion(null);
+        tramitePago.setCodigoProcesoDescripcion(null);
+
+       TramitePagoEntity tramitePagoEntity = modelMapper.map(tramitePago, TramitePagoEntity.class);
+        tramitePagoEntity = tramitePagoRepository.save(tramitePagoEntity);
+
+        return modelMapper.map(tramitePagoEntity, TramitePagoDTO.class);
+    }
+
+    @Override
+    public String codigoSistema() {
+
+        List<TramitePagoDTO> listadoTramitePago = busquedaPorFiltros(null,null, null, null, null, null, null);
+
+        List<Integer> listadoCodigos = new ArrayList<>();
+        for(TramitePagoDTO tramitePagoDTO : listadoTramitePago){
+            String cod = tramitePagoDTO.getCodigoSistema();
+            String cadenaNumerica = cod.substring(5);
+            Integer codigoInteger = Integer.parseInt(cadenaNumerica);
+            listadoCodigos.add(codigoInteger);
+        }
+
+        Integer codigoMayor = Collections.max(listadoCodigos);
+
+
+        Integer codigoNumero = codigoMayor + 1;
+        String codigoFormateado=String.format("%05d", codigoNumero);
+
+        return "TRAM" +"-" + codigoFormateado;
+    }
+
 
     @Override
     public List<TramitePagoDTO> busquedaPorFiltros(UUID id,UUID estado, Integer activo, UUID tipoTramite, String nombreTramite, LocalDateTime fechaInicio, LocalDateTime fechaFin, int offset, int size) {
