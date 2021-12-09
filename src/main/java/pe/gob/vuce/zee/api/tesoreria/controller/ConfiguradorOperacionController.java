@@ -39,9 +39,17 @@ public class ConfiguradorOperacionController {
             @RequestParam(name = "operacion", required = false) UUID operacion,
             Pageable paginador){
 
+        String messege;
+
         Page<ConfiguradorOperacionDTO> listaDTOPaginada = this.configuradorOperacionService.busquedaPorFiltros(null,null, 0,tramite,operacion,paginador);
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado del configurador de operaciones");
+        if(listaDTOPaginada.isEmpty()){
+            messege="No se encontraron registros";
+        }else{
+            messege="Listado configurador de operaciones";
+
+        }
+        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }
     @PostMapping
@@ -56,7 +64,7 @@ public class ConfiguradorOperacionController {
         }
         ConfiguradorOperacionDTO nuevaConfiguracion = configuradorOperacionService.guardar(configuradorOperacionDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(nuevaConfiguracion,"success","Configurador creado",nuevaConfiguracion.getId());
+        ResponseDTO responseBody = new ResponseDTO(nuevaConfiguracion,"Configurador creado","success",nuevaConfiguracion.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 

@@ -45,6 +45,8 @@ public class TipoCambioController {
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
+        String messege;
+
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
@@ -58,7 +60,15 @@ public class TipoCambioController {
 
         Page<TipoCambioDTO> listaDTOPaginada = this.tipoCambioService.busquedaPorFiltros(estado, 0, null, null, fechaInicio, fechaFin, paginador);
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tipos de cambio");
+        if(listaDTOPaginada.isEmpty()){
+            messege="No se encontraron registros";
+
+        }else{
+            messege="Listado tipos de cambio";
+
+        }
+
+        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
 
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }
@@ -76,17 +86,17 @@ public class TipoCambioController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
         TipoCambioDTO nuevoTipoCambio = tipoCambioService.guardar(tipoCambioDTO);
-        ResponseDTO responseBody = new ResponseDTO(nuevoTipoCambio,"success","Tipo de cambio creado",nuevoTipoCambio.getId());
+        ResponseDTO responseBody = new ResponseDTO(nuevoTipoCambio,"Tipo de cambio creado","success",nuevoTipoCambio.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
     @GetMapping("/exportar")
-    public void exportarTipoCambio(@RequestParam(name = "estado", required = false) UUID estado,
+    public ResponseEntity<ResponseDTO> exportarTipoCambio(@RequestParam(name = "estado", required = false) UUID estado,
                                    @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
                                    @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
                                    HttpServletResponse response) {
-
+        String messege = "";
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
@@ -135,8 +145,8 @@ public class TipoCambioController {
             } catch (IOException e) {
                 log.error("Error de entrada/salida", e);
             }
-
         }
-        throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El tipo de extension ingresado no es correcto");
+            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El tipo de extension ingresado no es correcto");
+
     }
 }

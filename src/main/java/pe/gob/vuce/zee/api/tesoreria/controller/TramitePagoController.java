@@ -45,6 +45,8 @@ public class TramitePagoController {
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             Pageable paginador){
 
+        String messege = "";
+
         if(nombreTramite.equals("")){
             nombreTramite=null;
         }
@@ -61,7 +63,13 @@ public class TramitePagoController {
         }
         Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(null,estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, "Listado de tramites de pago");
+        if(listaDTOPaginada.isEmpty()){
+            messege="No se encontraron registros";
+        }else{
+            messege="Listado de tramites de pago";
+        }
+
+        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada,messege);
 
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
         }
@@ -172,7 +180,7 @@ public class TramitePagoController {
 
         TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(id, nuevoEstado);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramiteEstado,"Informacion principal del tramite modificada","success",modificarTramiteEstado.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarTramiteEstado,"Estado modificado","success",modificarTramiteEstado.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
     }
 
