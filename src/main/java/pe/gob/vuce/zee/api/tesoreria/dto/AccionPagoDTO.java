@@ -1,5 +1,6 @@
 package pe.gob.vuce.zee.api.tesoreria.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,22 +18,36 @@ import java.util.UUID;
 public class AccionPagoDTO {
 
     private UUID id;
-    @NotNull(message = "El objeto de tramite de pago no puede ser nulo")
-    private TramitePagoEntity tramitePago;
+
+    private UUID tramitePagoId;
+
     @NotNull(message = "El codigo del modulo no puede ser nulo")
-    private Integer codigoModulo;
+    private UUID codigoModuloId;
+    private String codigoModuloDescripcion;
+
     @NotNull(message = "El codigo del proceso no puede ser nulo")
-    private Integer codigoProceso;
+    private UUID codigoProcesoId;
+    private String codigoProcesoDescripcion;
+
     @NotNull(message = "El codigo de formulario no puede ser nulo")
-    private Integer codigoFormulario;
+    private UUID codigoFormularioId;
+    private String codigoFormularioDescripcion;
+
     @NotNull(message = "El codigo de accion no puede ser nulo")
-    private Integer codigoAccion;
+    private UUID codigoAccionId;
+    private String codigoAccionDescripcion;
+
     private Integer clienteId;
     private Integer organizacionId;
-    private Integer estado;
+
+    private UUID estadoId;
+    private String estadoDescripcion;
+
     private Integer activo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
     private UUID usuarioCreacionId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaModificacion;
     private UUID usuarioModificacionId;
 }

@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.gob.vuce.zee.api.tesoreria.models.AccionPagoEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface AccionPagoRepository extends JpaRepository<AccionPagoEntity, UUID> {
+    List<AccionPagoEntity> findByTramitePagoId(UUID id);
 }

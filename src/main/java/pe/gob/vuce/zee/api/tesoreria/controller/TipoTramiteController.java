@@ -37,7 +37,7 @@ public class TipoTramiteController {
         }
         TipoTramiteDTO nuevoTipoTramite = tipoTramiteService.guardar(tipoTramiteDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(nuevoTipoTramite,"success","Tipo tramite creado",nuevoTipoTramite.getId());
+        ResponseDTO responseBody = new ResponseDTO(nuevoTipoTramite,"Tipo de tramite creado","success",nuevoTipoTramite.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -57,8 +57,25 @@ public class TipoTramiteController {
 
         TipoTramiteDTO modificarTipoTramite= tipoTramiteService.modificar(id,tipoTramiteDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTipoTramite,"success","Tipo tramite modificado",modificarTipoTramite.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarTipoTramite,"Tipo tramite modificado","success",modificarTipoTramite.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO> buscarPorTramitePago ( @PathVariable("id") UUID id){
+            String messege = "";
+
+            List<TipoTramiteDTO> listadoTipoTramite= tipoTramiteService.buscarTramitePago(id);
+
+            if(listadoTipoTramite.isEmpty()){
+                messege="No se encontraron registros por el tramite de pago buscado";
+            }else{
+                messege="Listado de tipos de tramite buscando por tramite de pago";
+            }
+
+        ResponseDTO responseBody = new ResponseDTO("success",listadoTipoTramite, messege);
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
     }
 
 }

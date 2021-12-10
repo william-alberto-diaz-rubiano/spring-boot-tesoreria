@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -21,14 +20,21 @@ import java.util.UUID;
 public class TipoTramiteDTO {
 
     private UUID id;
-    private TramitePagoEntity tramitePago;
+
+    private UUID tramitePagoId;
 
     @NotNull(message = "El tipo de calculo no puede ser nulo")
-    private Integer tipoCalculo;
+    private UUID tipoCalculoId;
+    private String tipoCalculoDescripcion;
+
     @NotNull(message = "El codigo del destino no puede ser nulo")
-    private Integer codigoDestino;
+    private UUID codigoDestinoId;
+    private String codigoDestinoDescripcion;
+
     @NotNull(message = "El codigo de la moneda no puede ser nulo")
-    private Integer codigoMoneda;
+    private UUID codigoMonedaId;
+    private String codigoMonedaDescripcion;
+
     @Digits(integer = 10, fraction = 2, message = "El porcentaje de UIT debe ser de maximo 10 digitos y maximo 2 fraciones")
     private BigDecimal porcentajeUIT;
     @NotNull(message = "El monto de pago no puede ser nulo")
@@ -38,15 +44,27 @@ public class TipoTramiteDTO {
     private BigDecimal cantidadInicial;
     @Digits(integer = 10, fraction = 2, message = "El cantidad final debe ser de maximo 10 digitos y maximo 2 fraciones")
     private BigDecimal cantidadFinal;
-    private Integer codigoModulo;
-    private Integer codigoProceso;
-    private Integer codigoFormulario;
-    private Integer codigoAccion;
+
+    private UUID codigoModuloId;
+    private String codigoModuloDescripcion;
+
+    private UUID codigoProcesoId;
+    private String codigoProcesoDescripcion;
+
+    private UUID codigoFormularioId;
+    private String codigoFormularioDescripcion;
+
+    private UUID codigoAccionId;
+    private String codigoAccionDescripcion;
+
     @Size(max = 100,message = "La pregunta con dato informado soporta maximo 100 caracteres")
     private String preguntaDatoInformado;
     private Integer clienteId;
     private Integer organizacionId;
-    private Integer estado;
+
+    private UUID estadoId;
+    private String estadoDescripcion;
+
     private Integer activo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;

@@ -29,8 +29,10 @@ public class UitEntity {
     private Integer clienteId;
     @Column(name = "vepg_vuit_organiz_fk", nullable = false)
     private Integer organizacionId;
-    @Column(name = "vepg_vuit_cod_estado", nullable = false)
-    private Integer estado;
+
+    @ManyToOne
+    @JoinColumn(name = "vepg_vuit_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
     @Column(name = "vepg_vuit_cod_active",nullable = false)
     private Integer activo;
     @Column(name = "vepg_vuit_datecreate", nullable = false)

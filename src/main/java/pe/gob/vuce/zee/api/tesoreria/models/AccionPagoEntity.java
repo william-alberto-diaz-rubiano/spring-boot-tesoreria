@@ -28,17 +28,21 @@ public class AccionPagoEntity {
     @JoinColumn(name = "vepg_acci_id_tram_fk", referencedColumnName = "vepg_tram_idllave_pk", nullable = false)
     private TramitePagoEntity  tramitePago;
 
-    @Column(name = "vepg_acci_cod_modulo",nullable = false, length = 20)
-    private Integer codigoModulo;
+    @ManyToOne
+    @JoinColumn(name = "vepg_acci_cod_modulo", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoModulo;
 
-    @Column(name = "vepg_acci_cod_proces", nullable = false)
-    private Integer codigoProceso;
+    @ManyToOne
+    @JoinColumn(name = "vepg_acci_cod_proces", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoProceso;
 
-    @Column(name = "vepg_acci_cod_formul", nullable = false)
-    private Integer codigoFormulario;
+    @ManyToOne
+    @JoinColumn(name = "vepg_acci_cod_formul", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoFormulario;
 
-    @Column(name = "vepg_acci_cod_accion", nullable = false, length = 20)
-    private Integer codigoAccion;
+    @ManyToOne
+    @JoinColumn(name = "vepg_acci_cod_accion", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoAccion;
 
     @Column(name = "vepg_acci_cliente_fk",nullable = false)
     private Integer clienteId;
@@ -46,13 +50,14 @@ public class AccionPagoEntity {
     @Column(name = "vepg_acci_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vepg_acci_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vepg_acci_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
     @Column(name = "vepg_acci_cod_active",nullable = false)
     private Integer activo;
 
-    @Column(name = "vepg_tram_datecreate", nullable = false)
+    @Column(name = "vepg_acci_datecreate", nullable = false)
     private LocalDateTime fechaCreacion;
 
     @Column(name = "vepg_acci_usr_create",nullable = false)

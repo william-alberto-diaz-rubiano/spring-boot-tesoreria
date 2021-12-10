@@ -26,39 +26,54 @@ public class AccionPagoController {
     public AccionPagoService accionPagoService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar (@Valid @RequestBody AccionPagoDTO accionPagoDTO, BindingResult result){
+    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody AccionPagoDTO accionPagoDTO, BindingResult result) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
 
             List<String> listaErrores = new ArrayList<>();
             result.getFieldErrors()
                     .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
 
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, listaErrores, "Verificar los campos");
         }
-        AccionPagoDTO nuevaAccionPago= accionPagoService.guardar(accionPagoDTO);
+        AccionPagoDTO nuevaAccionPago = accionPagoService.guardar(accionPagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(nuevaAccionPago,"success","Tipo tramite creado",nuevaAccionPago.getId());
+        ResponseDTO responseBody = new ResponseDTO(nuevaAccionPago, "Acción de tramite creada", "success", nuevaAccionPago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> modificar (@Valid
-                                                      @PathVariable("id") UUID id,
-                                                      AccionPagoDTO accionPagoDTO,
-                                                      BindingResult result){
-        if(result.hasErrors()){
+    public ResponseEntity<ResponseDTO> modificar(@Valid
+                                                 @PathVariable("id") UUID id,
+                                                 AccionPagoDTO accionPagoDTO,
+                                                 BindingResult result) {
+        if (result.hasErrors()) {
 
             List<String> listaErrores = new ArrayList<>();
             result.getFieldErrors()
                     .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
 
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, listaErrores, "Verificar los campos");
         }
-        AccionPagoDTO modificarAccionPago= accionPagoService.modificar(id,accionPagoDTO);
+        AccionPagoDTO modificarAccionPago = accionPagoService.modificar(id, accionPagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarAccionPago,"success","Tipo tramite modificado",modificarAccionPago.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarAccionPago, "Tipo tramite modificado", "success", modificarAccionPago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO> buscarPorTramitePago(@PathVariable("id") UUID id) {
+        String messege = "";
+
+        List<AccionPagoDTO> listadoAccionPago = accionPagoService.buscarPorTramitePago(id);
+
+        if (listadoAccionPago.isEmpty()) {
+            messege = "No se encontraron registros por el tramite de pago buscado";
+        } else {
+            messege = "Listado de acciones de tramite buscandos por tramite de pago";
+        }
+
+        ResponseDTO responseBody = new ResponseDTO("success", listadoAccionPago, messege);
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
     }
 }

@@ -28,14 +28,17 @@ public class TipoTramiteEntity {
     @JoinColumn(name = "vepg_ttrm_id_tram_fk", referencedColumnName = "vepg_tram_idllave_pk", nullable = false)
     private TramitePagoEntity tramitePago;
 
-    @Column(name = "vepg_ttrm_cod_tipoca", nullable = false)
-    private Integer tipoCalculo;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_tipoca", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity tipoCalculo;
 
-    @Column(name = "vepg_ttrm_cod_destin", nullable = false)
-    private Integer codigoDestino;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_destin", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoDestino;
 
-    @Column(name = "vepg_ttrm_cod_moneda", nullable = false, length = 20)
-    private Integer codigoMoneda;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_moneda", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoMoneda;
 
     @Column(name = "vepg_ttrm_porcen_uit", length = 10, scale = 2)
     private BigDecimal porcentajeUIT;
@@ -49,42 +52,47 @@ public class TipoTramiteEntity {
     @Column(name = "vepg_ttrm_cant_final", length = 10, scale = 2)
     private BigDecimal cantidadFinal;
 
-    @Column(name = "vepg_ttrm_cod_modulo",nullable = false, length = 20)
-    private Integer codigoModulo;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_modulo", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoModulo;
 
-    @Column(name = "vepg_ttrm_cod_proces", nullable = false)
-    private Integer codigoProceso;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_proces", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoProceso;
 
-    @Column(name = "vepg_ttrm_cod_formul", nullable = false)
-    private Integer codigoFormulario;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_formul", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoFormulario;
 
-    @Column(name = "vepg_ttrm_cod_accion", nullable = false)
-    private Integer codigoAccion;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_accion", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoAccion;
 
-    @Column(name = "vepg_ttrm_preg_datoi",nullable = false, length = 100)
+    @Column(name = "vepg_ttrm_preg_datoi", length = 100)
     private String preguntaDatoInformado;
 
-    @Column(name = "vepg_tram_cliente_fk",nullable = false)
+    @Column(name = "vepg_ttrm_cliente_fk",nullable = false)
     private Integer clienteId;
 
-    @Column(name = "vepg_tram_organiz_fk", nullable = false)
+    @Column(name = "vepg_ttrm_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vepg_tram_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vepg_ttrm_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
-    @Column(name = "vepg_tram_cod_active",nullable = false)
+    @Column(name = "vepg_ttrm_cod_active",nullable = false)
     private Integer activo;
 
-    @Column(name = "vepg_tram_datecreate", nullable = false)
+    @Column(name = "vepg_ttrm_datecreate", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column(name = "vepg_tram_usr_create",nullable = false)
+    @Column(name = "vepg_ttrm_usr_create",nullable = false)
     private UUID usuarioCreacionId;
 
-    @Column(name = "vepg_tram_dateupdate")
+    @Column(name = "vepg_ttrm_dateupdate")
     private LocalDateTime fechaModificacion;
 
-    @Column(name = "vepg_tram_usr_update")
+    @Column(name = "vepg_ttrm_usr_update")
     private UUID usuarioModificacionId;
 }

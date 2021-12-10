@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.TipoTramiteDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.AccionPagoEntity;
@@ -13,7 +14,9 @@ import pe.gob.vuce.zee.api.tesoreria.repository.AccionPagoRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AccionPagoServiceImpl implements AccionPagoService {
@@ -27,7 +30,12 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public AccionPagoDTO guardar(AccionPagoDTO accionPagoDTO) {
 
-        //accionPagoDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO"));
+        accionPagoDTO.setCodigoModuloDescripcion(null);
+        accionPagoDTO.setCodigoProcesoDescripcion(null);
+        accionPagoDTO.setCodigoFormularioDescripcion(null);
+        accionPagoDTO.setCodigoAccionDescripcion(null);
+        accionPagoDTO.setEstadoDescripcion(null);
+        accionPagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
         accionPagoDTO.setActivo(Constantes.HABILITADO);
         accionPagoDTO.setClienteId(1);
         accionPagoDTO.setOrganizacionId(1);
@@ -45,18 +53,23 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public AccionPagoDTO modificar(UUID id, AccionPagoDTO accionPagoDTO) {
 
-        AccionPagoEntity accionPagoModificar= accionPagoRepository.findById(id).orElse(null);
+        AccionPagoDTO accionPagoModificar= buscarId(id);
 
         if(accionPagoModificar == null){
-            throw new EntityNotFoundException("El tipo de tramite no existe");
+            throw new EntityNotFoundException("La acción con la que se activara el tramite no existe");
         }
-        //if(accionPagoModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")){
-          //  throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, la Accion de pago no se encuentra en estado activo");
-        //}
-        accionPagoModificar.setCodigoModulo(accionPagoDTO.getCodigoModulo());
-        accionPagoModificar.setCodigoProceso(accionPagoDTO.getCodigoProceso());
-        accionPagoModificar.setCodigoFormulario(accionPagoDTO.getCodigoFormulario());
-        accionPagoModificar.setCodigoAccion(accionPagoDTO.getCodigoAccion());
+        if(accionPagoModificar.getEstadoId() != UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO"))){
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, la Accion de pago no se encuentra en estado activo");
+        }
+        accionPagoDTO.setCodigoModuloDescripcion(null);
+        accionPagoDTO.setCodigoProcesoDescripcion(null);
+        accionPagoDTO.setCodigoFormularioDescripcion(null);
+        accionPagoDTO.setCodigoAccionDescripcion(null);
+        accionPagoDTO.setEstadoDescripcion(null);
+        accionPagoModificar.setCodigoModuloId(accionPagoDTO.getCodigoModuloId());
+        accionPagoModificar.setCodigoProcesoId(accionPagoDTO.getCodigoProcesoId());
+        accionPagoModificar.setCodigoFormularioId(accionPagoDTO.getCodigoFormularioId());
+        accionPagoModificar.setCodigoAccionId(accionPagoDTO.getCodigoAccionId());
 
         accionPagoModificar.setFechaModificacion(LocalDateTime.now());
         accionPagoModificar.setUsuarioModificacionId(UUID.randomUUID());
@@ -65,5 +78,18 @@ public class AccionPagoServiceImpl implements AccionPagoService {
         accionPagoModificado = accionPagoRepository.save(accionPagoModificado);
 
         return modelMapper.map(accionPagoModificado, AccionPagoDTO.class);
+    }
+
+    @Override
+    public AccionPagoDTO buscarId(UUID id) {
+
+        AccionPagoEntity accionPago= accionPagoRepository.findById(id).orElse(null);
+        return modelMapper.map(accionPago, AccionPagoDTO.class);
+    }
+
+    @Override
+    public List<AccionPagoDTO> buscarPorTramitePago(UUID id) {
+        var result = accionPagoRepository.findByTramitePagoId(id);
+        return result.stream().map(x -> modelMapper.map(x, AccionPagoDTO.class)).collect(Collectors.toList());
     }
 }

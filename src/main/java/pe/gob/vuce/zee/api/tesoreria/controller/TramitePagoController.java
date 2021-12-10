@@ -38,6 +38,7 @@ public class TramitePagoController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
+            @RequestParam(name = "id", required = false) UUID id,
             @RequestParam(name = "tipotramite", required = false) UUID tipoTramite,
             @RequestParam(name = "nombretramite", required = false) String nombreTramite,
             @RequestParam(name = "estado", required = false) UUID estado,
@@ -61,7 +62,7 @@ public class TramitePagoController {
                 throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
             }
         }
-        Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(null,estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
+        Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(id,estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
 
         if(listaDTOPaginada.isEmpty()){
             messege="No se encontraron registros";

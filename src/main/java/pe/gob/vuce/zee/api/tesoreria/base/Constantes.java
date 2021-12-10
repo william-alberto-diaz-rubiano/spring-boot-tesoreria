@@ -19,6 +19,7 @@ public class Constantes {
     public final static Map<Integer, String> OPERACIONES = new HashMap<Integer, String>();
     public final static Map<String, String> ESTADOS_CONFIGURADOR = new HashMap<String, String>();
     public final static Map<String, String> ESTADOS_TRAMITE_PAGO = new HashMap<String, String>();
+    public final static Map<String, String> ESTADOS_UIT = new HashMap<String, String>();
 
     static {
         ESTADOS_TIPO_CAMBIO.put("a2749d39-f219-8110-15ea-5749cbbab39a", "ACTIVO");
@@ -27,6 +28,10 @@ public class Constantes {
     static {
         ESTADOS_CONFIGURADOR.put("fb34b1dd-3af5-205b-3517-5720338bb33f", "ACTIVO");
         ESTADOS_CONFIGURADOR.put("789c5d18-cac5-681e-9d65-9280e3065340", "INACTIVO");
+    }
+    static {
+        ESTADOS_UIT.put("dd996bf3-7a6b-765f-51b2-977de6c25994", "ACTIVO");
+        ESTADOS_UIT.put("ecb19b25-e43d-e945-4186-a3282a2e566b", "INACTIVO");
     }
 
     static {

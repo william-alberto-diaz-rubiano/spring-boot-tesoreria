@@ -1,7 +1,10 @@
 package pe.gob.vuce.zee.api.tesoreria.service;
 
+import pe.gob.vuce.zee.api.tesoreria.dto.UitDTO;
+
 import java.math.BigDecimal;
 
 public interface UitService {
- BigDecimal valorMonto(String anio,BigDecimal porcentajeUit);
+    UitDTO guardar(UitDTO uitDTO);
+    BigDecimal valorMonto(String anio,BigDecimal porcentajeUit);
 }

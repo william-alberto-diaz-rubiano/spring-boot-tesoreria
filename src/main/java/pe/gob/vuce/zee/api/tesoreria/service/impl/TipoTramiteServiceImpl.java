@@ -13,7 +13,9 @@ import pe.gob.vuce.zee.api.tesoreria.repository.TipoTramiteRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoTramiteService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TipoTramiteServiceImpl implements TipoTramiteService {
@@ -27,7 +29,15 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public TipoTramiteDTO guardar(TipoTramiteDTO tipoTramiteDTO) {
 
-        //tipoTramiteDTO.setEstado(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO"));
+        tipoTramiteDTO.setTipoCalculoDescripcion(null);
+        tipoTramiteDTO.setCodigoDestinoDescripcion(null);
+        tipoTramiteDTO.setCodigoMonedaDescripcion(null);
+        tipoTramiteDTO.setCodigoModuloDescripcion(null);
+        tipoTramiteDTO.setCodigoProcesoDescripcion(null);
+        tipoTramiteDTO.setCodigoFormularioDescripcion(null);
+        tipoTramiteDTO.setCodigoAccionDescripcion(null);
+        tipoTramiteDTO.setEstadoDescripcion(null);
+        tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
         tipoTramiteDTO.setActivo(Constantes.HABILITADO);
         tipoTramiteDTO.setClienteId(1);
         tipoTramiteDTO.setOrganizacionId(1);
@@ -45,25 +55,35 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public TipoTramiteDTO modificar(UUID id, TipoTramiteDTO tipoTramiteDTO) {
 
-        TipoTramiteEntity tipoTramiteModificar= tipoTramiteRepository.findById(id).orElse(null);
+        TipoTramiteDTO tipoTramiteModificar = buscarId(id);
 
         if(tipoTramiteModificar == null){
             throw new EntityNotFoundException("El tipo de tramite no existe");
         }
-        //if(tipoTramiteModificar.getEstado() != Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"GUARDADO")){
-          //  throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tipo tramite no se encuentra en estado guardado");
-        //}
-        tipoTramiteModificar.setTipoCalculo(tipoTramiteDTO.getTipoCalculo());
-        tipoTramiteModificar.setCodigoDestino(tipoTramiteDTO.getCodigoDestino());
-        tipoTramiteModificar.setCodigoMoneda(tipoTramiteDTO.getCodigoMoneda());
+        if(tipoTramiteModificar.getEstadoId() != UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO"))){
+
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tipo tramite no se encuentra en estado activo");
+        }
+
+        tipoTramiteModificar.setTipoCalculoDescripcion(null);
+        tipoTramiteModificar.setCodigoDestinoDescripcion(null);
+        tipoTramiteModificar.setCodigoMonedaDescripcion(null);
+        tipoTramiteModificar.setCodigoModuloDescripcion(null);
+        tipoTramiteModificar.setCodigoProcesoDescripcion(null);
+        tipoTramiteModificar.setCodigoFormularioDescripcion(null);
+        tipoTramiteModificar.setCodigoAccionDescripcion(null);
+        tipoTramiteModificar.setEstadoDescripcion(null);
+        tipoTramiteModificar.setTipoCalculoId(tipoTramiteDTO.getTipoCalculoId());
+        tipoTramiteModificar.setCodigoDestinoId(tipoTramiteDTO.getCodigoDestinoId());
+        tipoTramiteModificar.setCodigoMonedaId(tipoTramiteDTO.getCodigoMonedaId());
         tipoTramiteModificar.setPorcentajeUIT(tipoTramiteDTO.getPorcentajeUIT());
         tipoTramiteModificar.setMontoPago(tipoTramiteDTO.getMontoPago());
         tipoTramiteModificar.setCantidadInicial(tipoTramiteDTO.getCantidadInicial());
         tipoTramiteModificar.setCantidadFinal(tipoTramiteDTO.getCantidadFinal());
-        tipoTramiteModificar.setCodigoModulo(tipoTramiteDTO.getCodigoModulo());
-        tipoTramiteModificar.setCodigoProceso(tipoTramiteDTO.getCodigoProceso());
-        tipoTramiteModificar.setCodigoFormulario(tipoTramiteDTO.getCodigoFormulario());
-        tipoTramiteModificar.setCodigoAccion(tipoTramiteDTO.getCodigoAccion());
+        tipoTramiteModificar.setCodigoModuloId(tipoTramiteDTO.getCodigoModuloId());
+        tipoTramiteModificar.setCodigoProcesoId(tipoTramiteDTO.getCodigoProcesoId());
+        tipoTramiteModificar.setCodigoFormularioId(tipoTramiteDTO.getCodigoFormularioId());
+        tipoTramiteModificar.setCodigoAccionId(tipoTramiteDTO.getCodigoAccionId());
         tipoTramiteModificar.setPreguntaDatoInformado(tipoTramiteDTO.getPreguntaDatoInformado());
         tipoTramiteModificar.setFechaModificacion(LocalDateTime.now());
         tipoTramiteModificar.setUsuarioModificacionId(UUID.randomUUID());
@@ -72,5 +92,19 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
         tipoTramiteModificado = tipoTramiteRepository.save(tipoTramiteModificado);
 
         return modelMapper.map(tipoTramiteModificado, TipoTramiteDTO.class);
+    }
+
+    @Override
+    public TipoTramiteDTO buscarId(UUID id) {
+        TipoTramiteEntity tipoTramite= tipoTramiteRepository.findById(id).orElse(null);
+        return modelMapper.map(tipoTramite, TipoTramiteDTO.class);
+    }
+
+    @Override
+    public List<TipoTramiteDTO> buscarTramitePago(UUID id) {
+
+        var result = tipoTramiteRepository.findByTramitePagoId(id);
+
+        return result.stream().map(x -> modelMapper.map(x, TipoTramiteDTO.class)).collect(Collectors.toList());
     }
 }

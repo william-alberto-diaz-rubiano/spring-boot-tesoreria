@@ -2,8 +2,6 @@ package pe.gob.vuce.zee.api.tesoreria.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import pe.gob.vuce.zee.api.tesoreria.models.ConfiguradorOperacionEntity;
-import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
