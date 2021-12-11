@@ -141,7 +141,7 @@ public class TramitePagoController {
 
         var rowDataList = listado.stream().map(x -> new String[]{
                 x.getFechaCreacion().toString(),
-                x.getConfiguradorOperacion().getTramiteDescripcion(),
+                x.getConfiguradorOperacionTramiteDescripcion(),
                 x.getCodigoSistema(),
                 x.getCodigoPago(),
                 x.getNombrePago(),

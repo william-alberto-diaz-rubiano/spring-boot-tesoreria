@@ -145,11 +145,8 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public List<TipoTramiteDTO> modificarAll(List<TipoTramiteDTO> listaObjetos) {
 
-        List<TipoTramiteEntity> listaTiposTramiteDataBase = tipoTramiteRepository.findByTramitePagoId(listaObjetos.get(0).getId());
-        System.out.println(listaTiposTramiteDataBase);
+        List<TipoTramiteEntity> listaTiposTramiteDataBase = tipoTramiteRepository.findByTramitePagoId(listaObjetos.get(0).getTramitePagoId());
         tipoTramiteRepository.deleteAll(listaTiposTramiteDataBase);
-        System.out.println();
-        System.out.println(listaTiposTramiteDataBase);
 
         for(TipoTramiteDTO tipoTramiteDTO : listaObjetos){
 

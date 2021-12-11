@@ -15,8 +15,12 @@ import java.util.UUID;
 public class TramitePagoDTO {
 
     private UUID id;
-    @NotNull(message = "El objeto de configurador de operaciones no puede ser nulo")
-    private ConfiguradorOperacionDTO configuradorOperacion;
+
+    @NotNull(message = "El UUID del configurador de operaciones no puede ser nulo")
+    private UUID configuradorOperacionId;
+
+    @NotNull(message = "La descripción del configurador de operaciones no puede ser nulo")
+    private String configuradorOperacionTramiteDescripcion;
 
     @Size(max = 20,message = "La base legal soporta maximo 20 caracteres")
     private String codigoSistema;

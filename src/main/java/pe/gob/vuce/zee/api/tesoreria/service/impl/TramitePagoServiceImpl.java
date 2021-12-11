@@ -33,9 +33,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     @Override
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
 
-        tramitePagoDTO.getConfiguradorOperacion().setTramiteDescripcion(null);
-        tramitePagoDTO.getConfiguradorOperacion().setOperacionDescripcion(null);
-        tramitePagoDTO.getConfiguradorOperacion().setEstadoDescripcion(null);
+        tramitePagoDTO.setConfiguradorOperacionTramiteDescripcion(null);
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
         tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO")));
         tramitePagoDTO.setClienteId(1);
@@ -64,9 +62,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
                 if (tramitePagoDTO1.getEstadoDescripcion().equals("ACTIVO")) {
 
-                    tramitePagoDTO1.getConfiguradorOperacion().setTramiteDescripcion(null);
-                    tramitePagoDTO1.getConfiguradorOperacion().setOperacionDescripcion(null);
-                    tramitePagoDTO1.getConfiguradorOperacion().setEstadoDescripcion(null);
+                    tramitePagoDTO1.setConfiguradorOperacionTramiteDescripcion(null);
                     tramitePagoDTO1.setCodigoProcesoId(tramitePagoDTO.getCodigoProcesoId());
                     tramitePagoDTO1.setFlagDestinos(tramitePagoDTO.isFlagDestinos());
                     tramitePagoDTO1.setCodigoPago(tramitePagoDTO.getCodigoPago());
@@ -140,9 +136,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
         }
 
         tramitePago.setEstadoId(nuevoEstado);
-        tramitePago.getConfiguradorOperacion().setTramiteDescripcion(null);
-        tramitePago.getConfiguradorOperacion().setOperacionDescripcion(null);
-        tramitePago.getConfiguradorOperacion().setEstadoDescripcion(null);
+        tramitePago.setConfiguradorOperacionTramiteDescripcion(null);
         tramitePago.setEstadoDescripcion(null);
         tramitePago.setCodigoProcesoDescripcion(null);
 
