@@ -31,6 +31,9 @@ public class TipoTramiteDTO {
     private UUID codigoDestinoId;
     private String codigoDestinoDescripcion;
 
+    @Size(max = 20,message = "La valor soporta maximo 20 caracteres")
+    private String valor;
+
     @NotNull(message = "El codigo de la moneda no puede ser nulo")
     private UUID codigoMonedaId;
     private String codigoMonedaDescripcion;

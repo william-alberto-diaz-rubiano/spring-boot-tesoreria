@@ -10,4 +10,6 @@ public interface TipoTramiteService {
     TipoTramiteDTO modificar(UUID id, TipoTramiteDTO tipoTramiteDTO);
     TipoTramiteDTO buscarId(UUID id);
     List<TipoTramiteDTO> buscarTramitePago(UUID id);
+    List<TipoTramiteDTO> guardarAll (List<TipoTramiteDTO> listaObjetos);
+    List<TipoTramiteDTO> modificarAll (List<TipoTramiteDTO> listaObjetos);
 }

@@ -1,5 +1,6 @@
 package pe.gob.vuce.zee.api.tesoreria.service.impl;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,7 @@ import pe.gob.vuce.zee.api.tesoreria.repository.TipoTramiteRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoTramiteService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,4 +107,86 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
 
         return result.stream().map(x -> modelMapper.map(x, TipoTramiteDTO.class)).collect(Collectors.toList());
     }
+
+    @Override
+    public List<TipoTramiteDTO> guardarAll(List<TipoTramiteDTO> listaObjetos) {
+
+        List<TipoTramiteEntity> listaobjetosEntity = new ArrayList<>();
+
+        for(TipoTramiteDTO tipoTramiteDTO : listaObjetos){
+
+            tipoTramiteDTO.setTipoCalculoDescripcion(null);
+            tipoTramiteDTO.setCodigoDestinoDescripcion(null);
+            tipoTramiteDTO.setCodigoMonedaDescripcion(null);
+            tipoTramiteDTO.setCodigoModuloDescripcion(null);
+            tipoTramiteDTO.setCodigoProcesoDescripcion(null);
+            tipoTramiteDTO.setCodigoFormularioDescripcion(null);
+            tipoTramiteDTO.setCodigoAccionDescripcion(null);
+            tipoTramiteDTO.setEstadoDescripcion(null);
+            tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+            tipoTramiteDTO.setActivo(Constantes.HABILITADO);
+            tipoTramiteDTO.setClienteId(1);
+            tipoTramiteDTO.setOrganizacionId(1);
+            tipoTramiteDTO.setUsuarioCreacionId(UUID.randomUUID());
+            tipoTramiteDTO.setFechaCreacion(LocalDateTime.now());
+            tipoTramiteDTO.setFechaModificacion(LocalDateTime.now());
+            tipoTramiteDTO.setUsuarioModificacionId(UUID.randomUUID());
+
+            TipoTramiteEntity tipoTramiteEntity = modelMapper.map(tipoTramiteDTO, TipoTramiteEntity.class);
+
+            listaobjetosEntity.add(tipoTramiteEntity);
+        }
+
+        listaobjetosEntity = tipoTramiteRepository.saveAll(listaobjetosEntity);
+
+        return listaobjetosEntity.stream().map(x -> modelMapper.map(x, TipoTramiteDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TipoTramiteDTO> modificarAll(List<TipoTramiteDTO> listaObjetos) {
+
+        List<TipoTramiteEntity> listaTiposTramiteDataBase = tipoTramiteRepository.findByTramitePagoId(listaObjetos.get(0).getId());
+        System.out.println(listaTiposTramiteDataBase);
+        tipoTramiteRepository.deleteAll(listaTiposTramiteDataBase);
+        System.out.println();
+        System.out.println(listaTiposTramiteDataBase);
+
+        for(TipoTramiteDTO tipoTramiteDTO : listaObjetos){
+
+            if(tipoTramiteDTO.getId() == null){
+                tipoTramiteDTO.setTipoCalculoDescripcion(null);
+                tipoTramiteDTO.setCodigoDestinoDescripcion(null);
+                tipoTramiteDTO.setCodigoMonedaDescripcion(null);
+                tipoTramiteDTO.setCodigoModuloDescripcion(null);
+                tipoTramiteDTO.setCodigoProcesoDescripcion(null);
+                tipoTramiteDTO.setCodigoFormularioDescripcion(null);
+                tipoTramiteDTO.setCodigoAccionDescripcion(null);
+                tipoTramiteDTO.setEstadoDescripcion(null);
+                tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+                tipoTramiteDTO.setActivo(Constantes.HABILITADO);
+                tipoTramiteDTO.setClienteId(1);
+                tipoTramiteDTO.setOrganizacionId(1);
+                tipoTramiteDTO.setUsuarioCreacionId(UUID.randomUUID());
+                tipoTramiteDTO.setFechaCreacion(LocalDateTime.now());
+                tipoTramiteDTO.setFechaModificacion(LocalDateTime.now());
+                tipoTramiteDTO.setUsuarioModificacionId(UUID.randomUUID());
+            }else{
+                tipoTramiteDTO.setTipoCalculoDescripcion(null);
+                tipoTramiteDTO.setCodigoDestinoDescripcion(null);
+                tipoTramiteDTO.setCodigoMonedaDescripcion(null);
+                tipoTramiteDTO.setCodigoModuloDescripcion(null);
+                tipoTramiteDTO.setCodigoProcesoDescripcion(null);
+                tipoTramiteDTO.setCodigoFormularioDescripcion(null);
+                tipoTramiteDTO.setCodigoAccionDescripcion(null);
+                tipoTramiteDTO.setEstadoDescripcion(null);
+            }
+
+        }
+
+        List<TipoTramiteEntity>  listaModificadaEntity =listaObjetos.stream().map(x -> modelMapper.map(x, TipoTramiteEntity.class)).collect(Collectors.toList());
+        listaModificadaEntity = tipoTramiteRepository.saveAll(listaModificadaEntity);
+
+        return listaModificadaEntity.stream().map(x -> modelMapper.map(x, TipoTramiteDTO.class)).collect(Collectors.toList());
+    }
 }
+

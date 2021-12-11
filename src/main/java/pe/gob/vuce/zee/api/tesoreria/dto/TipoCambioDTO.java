@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;

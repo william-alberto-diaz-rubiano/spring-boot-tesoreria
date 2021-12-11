@@ -25,26 +25,28 @@ public class TipoTramiteController {
     @Autowired
     public TipoTramiteService tipoTramiteService;
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TipoTramiteDTO tipoTramiteDTO, BindingResult result) {
-        if(result.hasErrors()){
 
-            List<String> listaErrores = new ArrayList<>();
-            result.getFieldErrors()
-                    .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
+@PostMapping
+public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteDTO> listaTipoTramites, BindingResult result) {
 
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
-        }
-        TipoTramiteDTO nuevoTipoTramite = tipoTramiteService.guardar(tipoTramiteDTO);
+    if(result.hasErrors()){
 
-        ResponseDTO responseBody = new ResponseDTO(nuevoTipoTramite,"Tipo de tramite creado","success",nuevoTipoTramite.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        List<String> listaErrores = new ArrayList<>();
+        result.getFieldErrors()
+
+                .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
+
+        throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
     }
+    List<TipoTramiteDTO> nuevoListaTipoTramite = tipoTramiteService.guardarAll(listaTipoTramites);
 
-    @PutMapping("/{id}")
+    ResponseDTO responseBody = new ResponseDTO("Success",nuevoListaTipoTramite,"Lista de tipos de tramite guardada");
+    return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+}
+
+    @PutMapping
     public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                 @PathVariable("id") UUID id,
-                                                 @RequestBody TipoTramiteDTO tipoTramiteDTO,
+                                                 @RequestBody List<TipoTramiteDTO> listaTipoTramites,
                                                  BindingResult result){
         if(result.hasErrors()){
 
@@ -55,9 +57,9 @@ public class TipoTramiteController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
-        TipoTramiteDTO modificarTipoTramite= tipoTramiteService.modificar(id,tipoTramiteDTO);
+        List<TipoTramiteDTO> modificarListaTipoTramite = tipoTramiteService.modificarAll(listaTipoTramites);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTipoTramite,"Tipo tramite modificado","success",modificarTipoTramite.getId());
+        ResponseDTO responseBody = new ResponseDTO("Success",modificarListaTipoTramite,"Lista de tipos de tramite modififcada");
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 

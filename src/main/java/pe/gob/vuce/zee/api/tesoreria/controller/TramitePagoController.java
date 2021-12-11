@@ -47,10 +47,7 @@ public class TramitePagoController {
             Pageable paginador){
 
         String messege = "";
-
-        if(nombreTramite.equals("")){
-            nombreTramite=null;
-        }
+        nombreTramite=nombreTramite.toUpperCase();
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 

@@ -32,6 +32,9 @@ public class TipoTramiteEntity {
     @JoinColumn(name = "vepg_ttrm_cod_tipoca", referencedColumnName = "vems_gcon_idllave_pk")
     private MaestroEntity tipoCalculo;
 
+    @Column(name = "vepg_ttrm_valor", length = 20)
+    private String valor;
+
     @ManyToOne
     @JoinColumn(name = "vepg_ttrm_cod_destin", referencedColumnName = "vems_gcon_idllave_pk")
     private MaestroEntity codigoDestino;
