@@ -50,7 +50,7 @@ public class TipoCambioDTO {
         return fechaRegistro;
     }
 
-    @JsonFormat(pattern = "MMMM")
+    @JsonFormat(pattern = "MMMM",timezone = "GMT-5")
     public LocalDateTime getMes(){
         return fechaRegistro;
     }
