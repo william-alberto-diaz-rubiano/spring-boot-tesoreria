@@ -47,8 +47,13 @@ public class TramitePagoController {
             Pageable paginador){
 
         String messege = "";
-        nombreTramite=nombreTramite.toUpperCase();
+        if(nombreTramite == ""){
+            nombreTramite=null;
+        }
+        if(nombreTramite != null){
 
+            nombreTramite=nombreTramite.toUpperCase();
+        }
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
