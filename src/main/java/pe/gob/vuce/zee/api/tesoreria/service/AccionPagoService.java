@@ -10,4 +10,6 @@ public interface AccionPagoService {
     AccionPagoDTO modificar(UUID id, AccionPagoDTO accionPagoDTO);
     AccionPagoDTO buscarId(UUID id);
     List<AccionPagoDTO> buscarPorTramitePago(UUID id);
+    List<AccionPagoDTO> guardarAll (List<AccionPagoDTO> listaObjetos);
+    List<AccionPagoDTO> modificarAll (List<AccionPagoDTO> listaObjetos);
 }

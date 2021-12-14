@@ -149,6 +149,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     @Override
     public String codigoSistema() {
 
+        Integer codigoMayor;
         List<TramitePagoDTO> listadoTramitePago = busquedaPorFiltros(null,null, null, null, null, null, null);
 
         List<Integer> listadoCodigos = new ArrayList<>();
@@ -159,7 +160,10 @@ public class TramitePagoServiceImpl implements TramitePagoService {
             listadoCodigos.add(codigoInteger);
         }
 
-        Integer codigoMayor = Collections.max(listadoCodigos);
+        if(listadoCodigos.isEmpty()){
+            codigoMayor = 1;
+        }
+        codigoMayor= Collections.max(listadoCodigos);
 
 
         Integer codigoNumero = codigoMayor + 1;

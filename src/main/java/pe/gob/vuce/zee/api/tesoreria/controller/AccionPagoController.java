@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.TipoTramiteDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
 
@@ -26,7 +27,7 @@ public class AccionPagoController {
     public AccionPagoService accionPagoService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody AccionPagoDTO accionPagoDTO, BindingResult result) {
+    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<AccionPagoDTO > listaAccionPagos, BindingResult result) {
 
         if (result.hasErrors()) {
 
@@ -36,16 +37,15 @@ public class AccionPagoController {
 
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, listaErrores, "Verificar los campos");
         }
-        AccionPagoDTO nuevaAccionPago = accionPagoService.guardar(accionPagoDTO);
+        List<AccionPagoDTO> nuevaListaAccionPago = accionPagoService.guardarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO(nuevaAccionPago, "Acción de tramite creada", "success", nuevaAccionPago.getId());
+        ResponseDTO responseBody = new ResponseDTO("Success",nuevaListaAccionPago,"Lista de accion de pagos guardada");
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                 @PathVariable("id") UUID id,
-                                                 AccionPagoDTO accionPagoDTO,
+                                                     @RequestBody List<AccionPagoDTO > listaAccionPagos,
                                                  BindingResult result) {
         if (result.hasErrors()) {
 
@@ -55,9 +55,9 @@ public class AccionPagoController {
 
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, listaErrores, "Verificar los campos");
         }
-        AccionPagoDTO modificarAccionPago = accionPagoService.modificar(id, accionPagoDTO);
+        List<AccionPagoDTO> modificarListaAccionPago = accionPagoService.modificarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarAccionPago, "Tipo tramite modificado", "success", modificarAccionPago.getId());
+        ResponseDTO responseBody = new ResponseDTO("Success",modificarListaAccionPago,"Lista de accion de pagos modificada");
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
