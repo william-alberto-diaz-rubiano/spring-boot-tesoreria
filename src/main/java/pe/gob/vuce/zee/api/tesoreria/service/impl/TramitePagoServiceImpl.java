@@ -35,7 +35,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
         tramitePagoDTO.setConfiguradorOperacionTramiteDescripcion(null);
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
-        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO")));
         tramitePagoDTO.setClienteId(1);
         tramitePagoDTO.setOrganizacionId(1);
         tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
