@@ -21,12 +21,16 @@ public class Constantes {
     public final static Map<String, String> ESTADOS_CONCEPTOS_PAGO = new HashMap<String, String>();
     public final static Map<String, String> CRITERIOS_CONCEPTOS_PAGO = new HashMap<String, String>();
     public final static Map<String, String> MONEDA = new HashMap<String, String>();
+    public final static Map<String, String> ESTADOS_REGISTRO_COMPROBANTES = new HashMap<String, String>();
 
     static {
         ESTADOS_TIPO_CAMBIO.put("a2749d39-f219-8110-15ea-5749cbbab39a", "ACTIVO");
         ESTADOS_TIPO_CAMBIO.put("c5781785-66b3-2012-0178-02178be96a46", "INACTIVO");
     }
-
+    static {
+        ESTADOS_REGISTRO_COMPROBANTES.put("6fefbe72-627b-4b22-aea2-5ffe41c2ce92", "ACTIVO");
+        ESTADOS_REGISTRO_COMPROBANTES.put("b4900b9f-8b8a-bd9f-2e76-5bbb777d1c79", "INACTIVO");
+    }
 
     static {
         ESTADOS_CONCEPTOS_PAGO.put("c49340d3-1eea-8e3d-7c46-b1f599b24041", "ACTIVO");

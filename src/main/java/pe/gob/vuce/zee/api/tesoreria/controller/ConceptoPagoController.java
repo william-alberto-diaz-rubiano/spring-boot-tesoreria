@@ -69,7 +69,7 @@ public class ConceptoPagoController {
         if (listaDTOPaginada.isEmpty()) {
             messege = "No se encontraron registros";
         } else {
-            messege = "Listado de tramites de pago";
+            messege = "Listado de conceptos de pago";
         }
 
         ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
@@ -110,9 +110,12 @@ public class ConceptoPagoController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
+        String nombreConceptoMayuscula = conceptoPagoDTO.getNombreConcepto().toUpperCase();
+        conceptoPagoDTO.setNombreConcepto(nombreConceptoMayuscula);
+
         ConceptoPagoDTO modificarConceptoPago = conceptoPagoService.modificar(id, conceptoPagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarConceptoPago,"Informacion principal del tramite modificada","success",modificarConceptoPago.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarConceptoPago,"Concepto de pago modificado","success",modificarConceptoPago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -127,6 +130,13 @@ public class ConceptoPagoController {
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response){
 
+        if (nombreConcepto == "") {
+            nombreConcepto = null;
+        }
+        if (nombreConcepto != null) {
+
+            nombreConcepto = nombreConcepto.toUpperCase();
+        }
 
         if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
 

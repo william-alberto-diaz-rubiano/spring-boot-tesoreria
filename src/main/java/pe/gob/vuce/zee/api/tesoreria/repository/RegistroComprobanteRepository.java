@@ -7,5 +7,5 @@ import pe.gob.vuce.zee.api.tesoreria.models.RegistroComprobanteEntity;
 import java.util.UUID;
 
 @Repository
-public interface RegistroComprobanteRepository extends JpaRepository<RegistroComprobanteEntity, UUID> {
+public interface RegistroComprobanteRepository extends JpaRepository<RegistroComprobanteEntity, UUID>,RegistroComprobanteCustomRepository {
 }

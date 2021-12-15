@@ -24,8 +24,9 @@ public class RegistroComprobanteEntity {
     @GeneratedValue(generator = "UUIDGenerator")
     private UUID id;
 
-    @Column(name = "vems_comp_cod_tipocb",nullable = false)
-    private Integer codigoComprobante;
+    @ManyToOne
+    @JoinColumn(name = "vems_comp_cod_tipocb", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoComprobante;
 
     @Column(name = "vems_comp_codi_serie", nullable = false, length = 10)
     private String codigoSerie;
@@ -42,8 +43,9 @@ public class RegistroComprobanteEntity {
     @Column(name = "vems_comp_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vems_comp_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vems_comp_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
     @Column(name = "vems_comp_cod_active",nullable = false)
     private Integer activo;
@@ -52,11 +54,11 @@ public class RegistroComprobanteEntity {
     private LocalDateTime fechaCreacion;
 
     @Column(name = "vems_comp_usr_create",nullable = false)
-    private Integer usuarioCreacionId;
+    private UUID usuarioCreacionId;
 
     @Column(name = "vems_comp_dateupdate")
     private LocalDateTime fechaModificacion;
 
     @Column(name = "vems_comp_usr_update")
-    private Integer usuarioModificacionId;
+    private UUID usuarioModificacionId;
 }

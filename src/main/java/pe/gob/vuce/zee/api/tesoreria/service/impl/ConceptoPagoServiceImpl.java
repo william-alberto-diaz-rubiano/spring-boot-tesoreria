@@ -113,6 +113,9 @@ public class ConceptoPagoServiceImpl implements ConceptoPagoService {
                     conceptoPagoDTO1.setCodigoMonedaId(conceptoPagoDTO.getCodigoMonedaId());
                     conceptoPagoDTO1.setPorcentajeUIT(conceptoPagoDTO.getPorcentajeUIT());
                     conceptoPagoDTO1.setMontoPago(conceptoPagoDTO.getMontoPago());
+                    conceptoPagoDTO1.setNombreConcepto(conceptoPagoDTO.getNombreConcepto());
+                    conceptoPagoDTO1.setFechaModificacion(LocalDateTime.now());
+                    conceptoPagoDTO1.setUsuarioModificacionId(UUID.randomUUID());
 
                     conceptoPagoEntity = modelMapper.map(conceptoPagoDTO1, ConceptoPagoEntity.class);
                     conceptoPagoEntity = conceptosPagoRepository.save(conceptoPagoEntity);
