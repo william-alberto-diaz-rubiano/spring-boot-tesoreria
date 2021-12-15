@@ -150,6 +150,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     public String codigoSistema() {
 
         Integer codigoMayor;
+        Integer codigoNumero;
         List<TramitePagoDTO> listadoTramitePago = busquedaPorFiltros(null,null, null, null, null, null, null);
 
         List<Integer> listadoCodigos = new ArrayList<>();
@@ -162,11 +163,12 @@ public class TramitePagoServiceImpl implements TramitePagoService {
 
         if(listadoCodigos.isEmpty()){
             codigoMayor = 1;
+            codigoNumero = codigoMayor;
+        }else{
+            codigoMayor= Collections.max(listadoCodigos);
+            codigoNumero = codigoMayor + 1;
         }
-        codigoMayor= Collections.max(listadoCodigos);
 
-
-        Integer codigoNumero = codigoMayor + 1;
         String codigoFormateado=String.format("%05d", codigoNumero);
 
         return "TRAM" +"-" + codigoFormateado;

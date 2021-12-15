@@ -40,42 +40,46 @@ public class ConceptoPagoEntity {
     @Column(name = "vepg_pago_dias_plazo",nullable = false)
     private Integer diazPlazo;
 
-    @Column(name = "vepg_pago_cod_criter", nullable = false)
-    private Integer codigoCriterio;
+    @ManyToOne
+    @JoinColumn(name = "vepg_pago_cod_criter", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoCriterio;
 
-    @Column(name = "vepg_pago_cod_moneda", nullable = false)
-    private Integer codigoMoneda;
+    @ManyToOne
+    @JoinColumn(name = "vepg_pago_cod_moneda", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoMoneda;
+
+    @ManyToOne
+    @JoinColumn(name = "vepg_pago_cod_operac", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity codigoOperacion;
 
     @Column(name = "vepg_pago_porcen_uit", length = 10, scale = 2)
     private BigDecimal porcentajeUIT;
 
-    @Column(name = "vepg_pago_cod_operac",nullable = false)
-    private Integer codigoOperacion;
-
     @Column(name = "vepg_pago_monto_pago", length = 10, scale = 2)
     private BigDecimal montoPago;
 
-    @Column(name = "vepg_tram_cliente_fk",nullable = false)
+    @Column(name = "vepg_pago_cliente_fk",nullable = false)
     private Integer clienteId;
 
-    @Column(name = "vepg_tram_organiz_fk", nullable = false)
+    @Column(name = "vepg_pago_organiz_fk", nullable = false)
     private Integer organizacionId;
 
-    @Column(name = "vepg_tram_cod_estado", nullable = false)
-    private Integer estado;
+    @ManyToOne
+    @JoinColumn(name = "vepg_pago_cod_estado", referencedColumnName = "vems_gcon_idllave_pk")
+    private MaestroEntity estado;
 
-    @Column(name = "vepg_tram_cod_active",nullable = false)
+    @Column(name = "vepg_pago_cod_active",nullable = false)
     private Integer activo;
 
-    @Column(name = "vepg_tram_datecreate", nullable = false)
+    @Column(name = "vepg_pago_datecreate", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column(name = "vepg_tram_usr_create",nullable = false)
-    private Integer usuarioCreacionId;
+    @Column(name = "vepg_pago_usr_create",nullable = false)
+    private UUID usuarioCreacionId;
 
-    @Column(name = "vepg_tram_dateupdate")
+    @Column(name = "vepg_pago_dateupdate")
     private LocalDateTime fechaModificacion;
 
-    @Column(name = "vepg_tram_usr_update")
-    private Integer usuarioModificacionId;
+    @Column(name = "vepg_pago_usr_update")
+    private UUID usuarioModificacionId;
 }

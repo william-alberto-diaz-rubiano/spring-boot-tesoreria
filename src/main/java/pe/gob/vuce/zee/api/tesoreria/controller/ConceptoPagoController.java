@@ -10,10 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
+import pe.gob.vuce.zee.api.tesoreria.dto.ConceptoPagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
-import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
+import pe.gob.vuce.zee.api.tesoreria.service.ConceptoPagoService;
 import pe.gob.vuce.zee.api.tesoreria.utils.ExportarUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,57 +28,57 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("v1/tramitePago")
+@RequestMapping("v1/conceptoPago")
 @Slf4j
-public class TramitePagoController {
+public class ConceptoPagoController {
 
     @Autowired
-    private TramitePagoService tramitePagoService;
-
+    private ConceptoPagoService conceptoPagoService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
             @RequestParam(name = "id", required = false) UUID id,
-            @RequestParam(name = "tipotramite", required = false) UUID tipoTramite,
-            @RequestParam(name = "nombretramite", required = false) String nombreTramite,
+            @RequestParam(name = "concepto", required = false) UUID concepto,
+            @RequestParam(name = "nombreConcepto", required = false) String nombreConcepto,
             @RequestParam(name = "estado", required = false) UUID estado,
             @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
-            Pageable paginador){
+            Pageable paginador) {
 
         String messege = "";
-        if(nombreTramite == ""){
-            nombreTramite=null;
-        }
-        if(nombreTramite != null){
 
-            nombreTramite=nombreTramite.toUpperCase();
+        if (nombreConcepto == "") {
+            nombreConcepto = null;
         }
-        if((fechaInicio != null && fechaFin == null) || (fechaFin !=null && fechaInicio == null)){
+        if (nombreConcepto != null) {
 
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"Los campos de las fechas no pueden ser nulos");
+            nombreConcepto = nombreConcepto.toUpperCase();
         }
-        if(fechaInicio != null && fechaFin != null){
+        if ((fechaInicio != null && fechaFin == null) || (fechaFin != null && fechaInicio == null)) {
 
-            if(fechaFin.compareTo(fechaInicio) < 0){
-                throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"La fecha final no puede ser menor a la fecha inicial");
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "Los campos de las fechas no pueden ser nulos");
+        }
+        if (fechaInicio != null && fechaFin != null) {
+
+            if (fechaFin.compareTo(fechaInicio) < 0) {
+                throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "La fecha final no puede ser menor a la fecha inicial");
             }
         }
-        Page<TramitePagoDTO> listaDTOPaginada = this.tramitePagoService.busquedaPorFiltros(id,estado, 0, tipoTramite, nombreTramite, fechaInicio, fechaFin, paginador);
+        Page<ConceptoPagoDTO> listaDTOPaginada = this.conceptoPagoService.busquedaPorFiltros(id, estado, 0, concepto, nombreConcepto, fechaInicio, fechaFin, paginador);
 
-        if(listaDTOPaginada.isEmpty()){
-            messege="No se encontraron registros";
-        }else{
-            messege="Listado de tramites de pago";
+        if (listaDTOPaginada.isEmpty()) {
+            messege = "No se encontraron registros";
+        } else {
+            messege = "Listado de tramites de pago";
         }
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada,messege);
+        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
 
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
-        }
+    }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result) {
+    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody ConceptoPagoDTO conceptoPagoDTO, BindingResult result) {
 
         if(result.hasErrors()){
 
@@ -86,21 +86,21 @@ public class TramitePagoController {
             result.getFieldErrors()
                     .stream().collect(Collectors.toList()).forEach(x -> listaErrores.add(x.getDefaultMessage()));
 
-            throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
+            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
-        String nombreTramiteMayuscula = tramitePagoDTO.getNombrePago().toUpperCase();
-        tramitePagoDTO.setNombrePago(nombreTramiteMayuscula);
+        String nombreConceptoMayuscula = conceptoPagoDTO.getNombreConcepto().toUpperCase();
+        conceptoPagoDTO.setNombreConcepto(nombreConceptoMayuscula);
 
-        TramitePagoDTO nuevoTramitePago = tramitePagoService.guardar(tramitePagoDTO);
-        ResponseDTO responseBody = new ResponseDTO(nuevoTramitePago,"Informacion principal guardada","success",nuevoTramitePago.getId());
+        ConceptoPagoDTO nuevoConceptoPago = conceptoPagoService.guardar(conceptoPagoDTO);
+        ResponseDTO responseBody = new ResponseDTO(nuevoConceptoPago,"Concepto de pago guardado","success",nuevoConceptoPago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> modificar(@Valid
                                                  @PathVariable("id") UUID id,
-                                                 @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result){
+                                                 @RequestBody ConceptoPagoDTO conceptoPagoDTO, BindingResult result){
         if(result.hasErrors()){
 
             List<String> listaErrores = new ArrayList<>();
@@ -110,20 +110,20 @@ public class TramitePagoController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
 
-        TramitePagoDTO modificarTramitePago = tramitePagoService.modificar(id, tramitePagoDTO);
+        ConceptoPagoDTO modificarConceptoPago = conceptoPagoService.modificar(id, conceptoPagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramitePago,"Informacion principal del tramite modificada","success",modificarTramitePago.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarConceptoPago,"Informacion principal del tramite modificada","success",modificarConceptoPago.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
     @GetMapping("/exportar")
-    public void exportarTipoCambio(
-
-            @RequestParam(name = "tipoTramite", required = false) UUID tipoTramite,
-            @RequestParam(name = "nombreTramite", required = false) String nombreTramite,
+    public void exportar(
+            @RequestParam(name = "id", required = false) UUID id,
+            @RequestParam(name = "concepto", required = false) UUID concepto,
+            @RequestParam(name = "nombreConcepto", required = false) String nombreConcepto,
             @RequestParam(name = "estado", required = false) UUID estado,
-            @RequestParam(name = "fechaInicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
-            @RequestParam(name = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
+            @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
+            @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
             HttpServletResponse response){
 
@@ -139,28 +139,31 @@ public class TramitePagoController {
             }
         }
 
-        var listado = tramitePagoService.busquedaPorFiltros(null,estado, Constantes.HABILITADO, tipoTramite, nombreTramite, fechaInicio, fechaFin);
+        var listado = conceptoPagoService.busquedaPorFiltros(null,estado, Constantes.HABILITADO, concepto, nombreConcepto, fechaInicio, fechaFin);
 
-        String[] columnas = new String[]{"FECHA REGISTRO", "TIPO TRAMITE/CONCEPTOS", "CODIGO DEL SISTEMA","CODIGO","TRAMITE","BASE LEGAL","ESTADO"};
+        String[] columnas = new String[]{"FECHA REGISTRO", "TIPO TRAMITE/CONCEPTO", "CODIGO DEL SISTEMA","CODIGO","CONCEPTO DE PAGO","DIAZ DE PLAZO","CRITERIO","MONEDA","MONTO","ESTADO"};
 
         var rowDataList = listado.stream().map(x -> new String[]{
                 x.getFechaCreacion().toString(),
                 x.getConfiguradorOperacionTramiteDescripcion(),
                 x.getCodigoSistema(),
-                x.getCodigoPago(),
-                x.getNombrePago(),
-                x.getBaseLegal(),
+                x.getCodigoGenerado(),
+                x.getNombreConcepto(),
+                x.getDiazPlazo().toString(),
+                x.getCodigoCriterioDescripcion(),
+                x.getCodigoMonedaDescripcion(),
+                x.getMontoPago().toString(),
                 x.getEstadoDescripcion(),
         }).collect(Collectors.toList());
         var contentDispositionTmpl = "attachment; filename=%s";
         if (formato.equalsIgnoreCase("xls") || formato.equalsIgnoreCase("xlsx")) {
             try {
                 response.setContentType(Constantes.CONTENT_TYPE_XLSX);
-                var contentDisposition = String.format(contentDispositionTmpl, "listado_tramites_pago.xlsx");
+                var contentDisposition = String.format(contentDispositionTmpl, "listado_conceptos_pago.xlsx");
                 response.setHeader("Content-Disposition", contentDisposition);
                 OutputStream os = response.getOutputStream();
-                String titulo = "LISTADO DE TRAMITES DE PAGO";
-                String hoja = "LISTADO DE TRAMITES DE PAGO";
+                String titulo = "LISTADO DE CONCEPTOS DE PAGO";
+                String hoja = "LISTADO DE CONCEPTOS DE PAGO";
 
                 ExportarUtil.crearExcel(rowDataList, titulo, hoja, columnas, os);
             } catch (IOException e) {
@@ -168,7 +171,7 @@ public class TramitePagoController {
             }
         } else if (formato.equalsIgnoreCase("csv")) {
             response.setContentType(Constantes.CONTENT_TYPE_CSV);
-            var contentDisposition = String.format(contentDispositionTmpl, "listado_tramites_pago.csv");
+            var contentDisposition = String.format(contentDispositionTmpl, "listado_conceptos_pago");
             response.setHeader("Content-Disposition", contentDisposition);
             PrintWriter writer = null;
             try {
@@ -180,24 +183,22 @@ public class TramitePagoController {
 
         }
         throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El tipo de extension ingresado no es correcto");
-
     }
 
     @PatchMapping("/{id}/{nuevoEstado}")
     public ResponseEntity<ResponseDTO> modificarEstado(@PathVariable("id") UUID id,@PathVariable("nuevoEstado") UUID nuevoEstado){
 
-        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(id, nuevoEstado);
+        ConceptoPagoDTO modificarConceptoEstado = conceptoPagoService.modificarEstado(id, nuevoEstado);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramiteEstado,"Estado modificado","success",modificarTramiteEstado.getId());
+        ResponseDTO responseBody = new ResponseDTO(modificarConceptoEstado,"Estado modificado","success",modificarConceptoEstado.getId());
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
     }
 
     @GetMapping("/codigoSistema")
-     public ResponseEntity<ResponseDTO> codigoSistema(){
-        String codigo = tramitePagoService.codigoSistema();
-         ResponseDTO responseBody = new ResponseDTO("success",codigo,"Codigo del sistema");
-         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
-     }
+    public ResponseEntity<ResponseDTO> codigoSistema(){
+        String codigo = conceptoPagoService.codigoSistema();
+        ResponseDTO responseBody = new ResponseDTO("success",codigo,"Codigo del sistema");
+        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+    }
+
 }
-
-

@@ -7,5 +7,5 @@ import pe.gob.vuce.zee.api.tesoreria.models.ConceptoPagoEntity;
 import java.util.UUID;
 
 @Repository
-public interface ConceptosPagoRepository extends JpaRepository<ConceptoPagoEntity, UUID> {
+public interface ConceptosPagoRepository extends JpaRepository<ConceptoPagoEntity, UUID>, ConceptoPagoCustomRepository {
 }

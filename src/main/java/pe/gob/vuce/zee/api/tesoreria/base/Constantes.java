@@ -3,8 +3,6 @@ package pe.gob.vuce.zee.api.tesoreria.base;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class Constantes {
 
@@ -20,11 +18,32 @@ public class Constantes {
     public final static Map<String, String> ESTADOS_CONFIGURADOR = new HashMap<String, String>();
     public final static Map<String, String> ESTADOS_TRAMITE_PAGO = new HashMap<String, String>();
     public final static Map<String, String> ESTADOS_UIT = new HashMap<String, String>();
+    public final static Map<String, String> ESTADOS_CONCEPTOS_PAGO = new HashMap<String, String>();
+    public final static Map<String, String> CRITERIOS_CONCEPTOS_PAGO = new HashMap<String, String>();
+    public final static Map<String, String> MONEDA = new HashMap<String, String>();
 
     static {
         ESTADOS_TIPO_CAMBIO.put("a2749d39-f219-8110-15ea-5749cbbab39a", "ACTIVO");
         ESTADOS_TIPO_CAMBIO.put("c5781785-66b3-2012-0178-02178be96a46", "INACTIVO");
     }
+
+
+    static {
+        ESTADOS_CONCEPTOS_PAGO.put("c49340d3-1eea-8e3d-7c46-b1f599b24041", "ACTIVO");
+        ESTADOS_CONCEPTOS_PAGO.put("b84ecadd-ab97-63f3-84f7-31d72cc3824b", "INACTIVO");
+    }
+    static {
+        CRITERIOS_CONCEPTOS_PAGO.put("1e41b7a7-860f-6ebf-1507-1c659556373f", "UNIDAD");
+        CRITERIOS_CONCEPTOS_PAGO.put("d670cbe6-5ef3-a67f-0389-51b4062ea59e", "DIA");
+        CRITERIOS_CONCEPTOS_PAGO.put("ec5f6d48-8f0d-bb06-e56f-c3f1ea448f94", "MES");
+        CRITERIOS_CONCEPTOS_PAGO.put("4615788f-9be1-997f-85a9-663266b85131", "AÑO");
+        CRITERIOS_CONCEPTOS_PAGO.put("25b9157e-5444-5174-67d7-558be927ecfe", "HORA");
+    }
+    static {
+        MONEDA.put("52363780-6174-e0c2-8bf6-c88aae514579", "SOLES");
+        MONEDA.put("730434e3-999b-c8a7-b65e-89aa59adf10d", "USD");
+    }
+
     static {
         ESTADOS_CONFIGURADOR.put("fb34b1dd-3af5-205b-3517-5720338bb33f", "ACTIVO");
         ESTADOS_CONFIGURADOR.put("789c5d18-cac5-681e-9d65-9280e3065340", "INACTIVO");
