@@ -27,10 +27,9 @@ public class UitController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> busquedaPorFitros(
-            @RequestParam(name = "anio", required = true) String anio,
             @RequestParam(name = "porcentaje", required = true) BigDecimal porcentaje){
 
-        var monto = uitService.valorMonto(anio,porcentaje);
+        var monto = uitService.valorMonto(porcentaje);
         ResponseDTO rpta = new ResponseDTO("success", monto, "monto segun porcentaje de UIT");
         return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
     }

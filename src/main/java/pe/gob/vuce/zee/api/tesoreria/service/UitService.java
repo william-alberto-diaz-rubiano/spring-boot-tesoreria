@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 
 public interface UitService {
     UitDTO guardar(UitDTO uitDTO);
-    BigDecimal valorMonto(String anio,BigDecimal porcentajeUit);
+    BigDecimal valorMonto(BigDecimal porcentajeUit);
 }

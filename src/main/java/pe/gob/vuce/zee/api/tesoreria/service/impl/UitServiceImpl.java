@@ -10,6 +10,7 @@ import pe.gob.vuce.zee.api.tesoreria.repository.UitRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.UitService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -42,8 +43,11 @@ public class UitServiceImpl implements UitService {
     }
 
     @Override
-    public BigDecimal valorMonto(String anio,BigDecimal porcentajeUit) {
+    public BigDecimal valorMonto(BigDecimal porcentajeUit) {
 
+        LocalDate fecha_actual=LocalDate.now();
+        int anio_actual= fecha_actual.getYear();
+        String anio = String.valueOf(anio_actual);
         UitEntity uit=uitRepository.findByAnioUit(anio);
         var monto= uit.getValorSolesUit() / 100 * porcentajeUit.doubleValue();
 
