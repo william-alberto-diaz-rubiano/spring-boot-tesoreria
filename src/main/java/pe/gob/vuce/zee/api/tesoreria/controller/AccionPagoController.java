@@ -39,7 +39,7 @@ public class AccionPagoController {
         }
         List<AccionPagoDTO> nuevaListaAccionPago = accionPagoService.guardarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO("Success",nuevaListaAccionPago,"Lista de accion de pagos guardada");
+        ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada");
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -57,7 +57,7 @@ public class AccionPagoController {
         }
         List<AccionPagoDTO> modificarListaAccionPago = accionPagoService.modificarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO("Success",modificarListaAccionPago,"Lista de accion de pagos modificada");
+        ResponseDTO responseBody = new ResponseDTO("success",modificarListaAccionPago,"Lista de accion de pagos modificada");
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
