@@ -69,9 +69,11 @@ public class TramitePagoEntity {
     @Column(name = "vepg_tram_usr_create",nullable = false)
     private UUID usuarioCreacionId;
 
+    @Column(name = "vepg_tram_usr_update")
+    private UUID usuarioModificacionId;
+
     @Column(name = "vepg_tram_dateupdate")
     private LocalDateTime fechaModificacion;
 
-    @Column(name = "vepg_tram_usr_update")
-    private UUID usuarioModificacionId;
+
 }

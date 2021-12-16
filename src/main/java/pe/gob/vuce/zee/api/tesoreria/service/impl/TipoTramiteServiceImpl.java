@@ -1,6 +1,5 @@
 package pe.gob.vuce.zee.api.tesoreria.service.impl;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

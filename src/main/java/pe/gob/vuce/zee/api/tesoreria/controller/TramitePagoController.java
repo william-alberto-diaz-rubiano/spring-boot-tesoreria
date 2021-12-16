@@ -183,7 +183,7 @@ public class TramitePagoController {
 
     }
 
-    @PatchMapping("/{id}/{nuevoEstado}")
+    @PutMapping("/{id}/{nuevoEstado}")
     public ResponseEntity<ResponseDTO> modificarEstado(@PathVariable("id") UUID id,@PathVariable("nuevoEstado") UUID nuevoEstado){
 
         TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(id, nuevoEstado);
