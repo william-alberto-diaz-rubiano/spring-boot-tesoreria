@@ -43,6 +43,13 @@ public class ResponseDTO {
         this.message = message;
     }
 
+    public ResponseDTO(String status, List<?> list, String message,UUID id) {
+        this.status = status;
+        this.list = list;
+        this.message = message;
+        this.id = id;
+    }
+
     public ResponseDTO(String status, String message, UUID id) {
         this.status = status;
         this.message = message;

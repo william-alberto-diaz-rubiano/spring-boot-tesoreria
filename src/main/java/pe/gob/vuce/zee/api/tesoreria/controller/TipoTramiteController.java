@@ -40,7 +40,9 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
     }
     List<TipoTramiteDTO> nuevoListaTipoTramite = tipoTramiteService.guardarAll(listaTipoTramites);
 
-    ResponseDTO responseBody = new ResponseDTO("success",nuevoListaTipoTramite,"Lista de tipos de tramite guardada");
+    UUID idTramitePago = nuevoListaTipoTramite.get(0).getTramitePagoId();
+
+    ResponseDTO responseBody = new ResponseDTO("success",nuevoListaTipoTramite,"Lista de tipos de tramite guardada", idTramitePago);
     return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
 }
 
@@ -59,7 +61,9 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
 
         List<TipoTramiteDTO> modificarListaTipoTramite = tipoTramiteService.modificarAll(listaTipoTramites);
 
-        ResponseDTO responseBody = new ResponseDTO("success",modificarListaTipoTramite,"Lista de tipos de tramite modififcada");
+        UUID idTramitePago = modificarListaTipoTramite.get(0).getTramitePagoId();
+
+        ResponseDTO responseBody = new ResponseDTO("success",modificarListaTipoTramite,"Lista de tipos de tramite modififcada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 

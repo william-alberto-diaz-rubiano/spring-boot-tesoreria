@@ -39,7 +39,9 @@ public class AccionPagoController {
         }
         List<AccionPagoDTO> nuevaListaAccionPago = accionPagoService.guardarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada");
+        UUID idTramitePago = nuevaListaAccionPago.get(0).getTramitePagoId();
+
+        ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
@@ -57,7 +59,9 @@ public class AccionPagoController {
         }
         List<AccionPagoDTO> modificarListaAccionPago = accionPagoService.modificarAll(listaAccionPagos);
 
-        ResponseDTO responseBody = new ResponseDTO("success",modificarListaAccionPago,"Lista de accion de pagos modificada");
+        UUID idTramitePago = modificarListaAccionPago.get(0).getTramitePagoId();
+
+        ResponseDTO responseBody = new ResponseDTO("success",modificarListaAccionPago,"Lista de accion de pagos modificada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
     }
 
