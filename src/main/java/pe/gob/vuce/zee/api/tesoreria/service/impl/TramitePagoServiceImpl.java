@@ -60,7 +60,7 @@ public class TramitePagoServiceImpl implements TramitePagoService {
         } else {
             for (TramitePagoDTO tramitePagoDTO1 : listaPorNombreTramite) {
 
-                if (tramitePagoDTO1.getEstadoDescripcion().equals("ACTIVO")) {
+                if (tramitePagoDTO1.getEstadoDescripcion().equals("ACTIVO") || tramitePagoDTO1.getEstadoDescripcion().equals("GUARDADO")) {
 
                     tramitePagoDTO1.setConfiguradorOperacionTramiteDescripcion(null);
                     tramitePagoDTO1.setCodigoProcesoId(tramitePagoDTO.getCodigoProcesoId());
