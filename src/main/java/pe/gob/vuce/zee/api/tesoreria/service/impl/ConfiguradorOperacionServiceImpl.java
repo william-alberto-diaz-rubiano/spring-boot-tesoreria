@@ -13,6 +13,7 @@ import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.ConfiguradorOperacionEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.ConfiguradorOperacionRepository;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.ConfiguradorOperacionService;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,9 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     private ConfiguradorOperacionRepository configuradorOperacionRepository;
 
     @Autowired
+    private MaestroRepository maestroRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -40,12 +44,14 @@ public class ConfiguradorOperacionServiceImpl implements ConfiguradorOperacionSe
     @Override
     public ConfiguradorOperacionDTO guardar(ConfiguradorOperacionDTO configuradorOperacionDTO) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(31,1).getId();
+
         List<ConfiguradorOperacionDTO> listaPorTramiteConcepto= busquedaPorFiltros(null,null,null,configuradorOperacionDTO.getTramiteId(),null);
 
         if(!listaPorTramiteConcepto.isEmpty()){
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"El tipo de tramite/concepto ya se encuentra registrado");
         }
-        configuradorOperacionDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_CONFIGURADOR,"ACTIVO")));
+        configuradorOperacionDTO.setEstadoId(estadoActivo);
         configuradorOperacionDTO.setActivo(Constantes.HABILITADO);
         configuradorOperacionDTO.setClienteId(1);
         configuradorOperacionDTO.setOrganizacionId(1);

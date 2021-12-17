@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
 import pe.gob.vuce.zee.api.tesoreria.models.TipoCambioEntity;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.repository.TipoCambioRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoCambioService;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 public class TipoCambioServiceImpl implements TipoCambioService {
     @Autowired
     private TipoCambioRepository tipoCambioRepository;
+
+    @Autowired
+    private MaestroRepository maestroRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -55,25 +59,22 @@ public class TipoCambioServiceImpl implements TipoCambioService {
     @Override
     public TipoCambioDTO guardar(TipoCambioDTO tipoCambioDTO) {
 
-        List<TipoCambioDTO> listaPorEstado= busquedaPorFiltros(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"ACTIVO")), null,null,null,null,null);
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(30,1).getId();
+        UUID estadoInactivo=maestroRepository.findByPrefijoAndCorrelativo(30,2).getId();
 
-        System.out.println(listaPorEstado);
+        List<TipoCambioDTO> listaPorEstado= busquedaPorFiltros(estadoActivo, null,null,null,null,null);
 
         for(TipoCambioDTO tipoCambioDTO1 : listaPorEstado){
-            tipoCambioDTO1.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"INACTIVO")));
+            tipoCambioDTO1.setEstadoId(estadoInactivo);
             tipoCambioDTO1.setEstadoDescripcion(null);
 
-            System.out.println();
-            System.out.println(tipoCambioDTO1);
             TipoCambioEntity tipoCambioEntity1 = modelMapper.map(tipoCambioDTO1, TipoCambioEntity.class);
 
-            System.out.println();
-            System.out.println(tipoCambioEntity1);
             tipoCambioRepository.save(tipoCambioEntity1);
         }
 
         tipoCambioDTO.setActivo(Constantes.HABILITADO);
-        tipoCambioDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TIPO_CAMBIO,"ACTIVO")));
+        tipoCambioDTO.setEstadoId(estadoActivo);
         tipoCambioDTO.setClienteId(1);
         tipoCambioDTO.setOrganizacionId(1);
         tipoCambioDTO.setUsuarioCreacionId(UUID.randomUUID());

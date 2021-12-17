@@ -12,6 +12,7 @@ import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.TramitePagoEntity;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.repository.TramitePagoRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 
@@ -28,14 +29,19 @@ public class TramitePagoServiceImpl implements TramitePagoService {
     private TramitePagoRepository tramitePagoRepository;
 
     @Autowired
+    private MaestroRepository maestroRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public TramitePagoDTO guardar(TramitePagoDTO tramitePagoDTO) {
 
+        UUID estadoGuardado=maestroRepository.findByPrefijoAndCorrelativo(34,3).getId();
+
         tramitePagoDTO.setConfiguradorOperacionTramiteDescripcion(null);
         tramitePagoDTO.setActivo(Constantes.HABILITADO);
-        tramitePagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"GUARDADO")));
+        tramitePagoDTO.setEstadoId(estadoGuardado);
         tramitePagoDTO.setClienteId(1);
         tramitePagoDTO.setOrganizacionId(1);
         tramitePagoDTO.setUsuarioCreacionId(UUID.randomUUID());
@@ -131,9 +137,10 @@ public class TramitePagoServiceImpl implements TramitePagoService {
         }
         TramitePagoDTO tramitePago = listadoTramitePago.get(0);
         UUID estadoGuardado = tramitePago.getEstadoId();
-        if(estadoGuardado.equals(nuevoEstado)){
-            throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "No se puede realizar el cambio de estado, el estado actual y el estado ingresado son el mismo");
-        }
+
+        //if(estadoGuardado.equals(nuevoEstado)){
+        //    throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "No se puede realizar el cambio de estado, el estado actual y el estado ingresado son el mismo");
+        //}
 
         tramitePago.setEstadoId(nuevoEstado);
         tramitePago.setConfiguradorOperacionTramiteDescripcion(null);

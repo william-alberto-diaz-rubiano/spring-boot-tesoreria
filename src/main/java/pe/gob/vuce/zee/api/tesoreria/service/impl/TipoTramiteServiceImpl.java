@@ -9,6 +9,7 @@ import pe.gob.vuce.zee.api.tesoreria.dto.TipoTramiteDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.TipoTramiteEntity;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.repository.TipoTramiteRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoTramiteService;
 
@@ -23,10 +24,15 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     private TipoTramiteRepository tipoTramiteRepository;
 
     @Autowired
+    private MaestroRepository maestroRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public TipoTramiteDTO guardar(TipoTramiteDTO tipoTramiteDTO) {
+
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
 
         tipoTramiteDTO.setTipoCalculoDescripcion(null);
         tipoTramiteDTO.setCodigoDestinoDescripcion(null);
@@ -36,7 +42,7 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
         tipoTramiteDTO.setCodigoFormularioDescripcion(null);
         tipoTramiteDTO.setCodigoAccionDescripcion(null);
         tipoTramiteDTO.setEstadoDescripcion(null);
-        tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+        tipoTramiteDTO.setEstadoId(estadoActivo);
         tipoTramiteDTO.setActivo(Constantes.HABILITADO);
         tipoTramiteDTO.setClienteId(1);
         tipoTramiteDTO.setOrganizacionId(1);
@@ -54,12 +60,14 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public TipoTramiteDTO modificar(UUID id, TipoTramiteDTO tipoTramiteDTO) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         TipoTramiteDTO tipoTramiteModificar = buscarId(id);
 
         if(tipoTramiteModificar == null){
             throw new EntityNotFoundException("El tipo de tramite no existe");
         }
-        if(tipoTramiteModificar.getEstadoId() != UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO"))){
+        if(tipoTramiteModificar.getEstadoId() != estadoActivo ){
 
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, el tipo tramite no se encuentra en estado activo");
         }
@@ -110,6 +118,8 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public List<TipoTramiteDTO> guardarAll(List<TipoTramiteDTO> listaObjetos) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         List<TipoTramiteEntity> listaobjetosEntity = new ArrayList<>();
 
         for(TipoTramiteDTO tipoTramiteDTO : listaObjetos){
@@ -122,7 +132,7 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
             tipoTramiteDTO.setCodigoFormularioDescripcion(null);
             tipoTramiteDTO.setCodigoAccionDescripcion(null);
             tipoTramiteDTO.setEstadoDescripcion(null);
-            tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+            tipoTramiteDTO.setEstadoId(estadoActivo);
             tipoTramiteDTO.setActivo(Constantes.HABILITADO);
             tipoTramiteDTO.setClienteId(1);
             tipoTramiteDTO.setOrganizacionId(1);
@@ -144,6 +154,8 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
     @Override
     public List<TipoTramiteDTO> modificarAll(List<TipoTramiteDTO> listaObjetos) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         List<TipoTramiteEntity> listaTiposTramiteDataBase = tipoTramiteRepository.findByTramitePagoId(listaObjetos.get(0).getTramitePagoId());
         tipoTramiteRepository.deleteAll(listaTiposTramiteDataBase);
 
@@ -158,7 +170,7 @@ public class TipoTramiteServiceImpl implements TipoTramiteService {
                 tipoTramiteDTO.setCodigoFormularioDescripcion(null);
                 tipoTramiteDTO.setCodigoAccionDescripcion(null);
                 tipoTramiteDTO.setEstadoDescripcion(null);
-                tipoTramiteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+                tipoTramiteDTO.setEstadoId(estadoActivo);
                 tipoTramiteDTO.setActivo(Constantes.HABILITADO);
                 tipoTramiteDTO.setClienteId(1);
                 tipoTramiteDTO.setOrganizacionId(1);

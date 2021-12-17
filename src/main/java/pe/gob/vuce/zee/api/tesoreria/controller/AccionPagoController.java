@@ -11,6 +11,7 @@ import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
 import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 
@@ -31,8 +32,13 @@ public class AccionPagoController {
     @Autowired
     public TramitePagoService tramitePagoService;
 
+    @Autowired
+    private MaestroRepository maestroRepository;
+
     @PostMapping
     public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<AccionPagoDTO > listaAccionPagos, BindingResult result) {
+
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
 
         if (result.hasErrors()) {
 
@@ -46,7 +52,7 @@ public class AccionPagoController {
 
         UUID idTramitePago = nuevaListaAccionPago.get(0).getTramitePagoId();
 
-        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(idTramitePago, UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(idTramitePago,estadoActivo);
 
         ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);

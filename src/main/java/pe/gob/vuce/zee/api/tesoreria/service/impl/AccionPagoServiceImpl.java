@@ -11,6 +11,7 @@ import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.AccionPagoEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.AccionPagoRepository;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
 
 import java.time.LocalDateTime;
@@ -26,17 +27,22 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     private AccionPagoRepository accionPagoRepository;
 
     @Autowired
+    private MaestroRepository maestroRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public AccionPagoDTO guardar(AccionPagoDTO accionPagoDTO) {
+
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
 
         accionPagoDTO.setCodigoModuloDescripcion(null);
         accionPagoDTO.setCodigoProcesoDescripcion(null);
         accionPagoDTO.setCodigoFormularioDescripcion(null);
         accionPagoDTO.setCodigoAccionDescripcion(null);
         accionPagoDTO.setEstadoDescripcion(null);
-        accionPagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+        accionPagoDTO.setEstadoId(estadoActivo);
         accionPagoDTO.setActivo(Constantes.HABILITADO);
         accionPagoDTO.setClienteId(1);
         accionPagoDTO.setOrganizacionId(1);
@@ -54,12 +60,14 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public AccionPagoDTO modificar(UUID id, AccionPagoDTO accionPagoDTO) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         AccionPagoDTO accionPagoModificar= buscarId(id);
 
         if(accionPagoModificar == null){
             throw new EntityNotFoundException("La acción con la que se activara el tramite no existe");
         }
-        if(accionPagoModificar.getEstadoId() != UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO"))){
+        if(accionPagoModificar.getEstadoId() != estadoActivo){
             throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST,"No se puede realizar la modificacion, la Accion de pago no se encuentra en estado activo");
         }
         accionPagoDTO.setCodigoModuloDescripcion(null);
@@ -97,6 +105,8 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public List<AccionPagoDTO> guardarAll(List<AccionPagoDTO> listaObjetos) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         List<AccionPagoEntity> listaobjetosEntity = new ArrayList<>();
 
         for(AccionPagoDTO accionPagoDTO : listaObjetos){
@@ -106,7 +116,7 @@ public class AccionPagoServiceImpl implements AccionPagoService {
             accionPagoDTO.setCodigoFormularioDescripcion(null);
             accionPagoDTO.setCodigoAccionDescripcion(null);
             accionPagoDTO.setEstadoDescripcion(null);
-            accionPagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+            accionPagoDTO.setEstadoId(estadoActivo);
             accionPagoDTO.setActivo(Constantes.HABILITADO);
             accionPagoDTO.setClienteId(1);
             accionPagoDTO.setOrganizacionId(1);
@@ -128,6 +138,8 @@ public class AccionPagoServiceImpl implements AccionPagoService {
     @Override
     public List<AccionPagoDTO> modificarAll(List<AccionPagoDTO> listaObjetos) {
 
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+
         List<AccionPagoEntity> listaAccionPagoDataBase = accionPagoRepository.findByTramitePagoId(listaObjetos.get(0).getTramitePagoId());
         accionPagoRepository.deleteAll(listaAccionPagoDataBase);
 
@@ -140,7 +152,7 @@ public class AccionPagoServiceImpl implements AccionPagoService {
                 accionPagoDTO.setCodigoFormularioDescripcion(null);
                 accionPagoDTO.setCodigoAccionDescripcion(null);
                 accionPagoDTO.setEstadoDescripcion(null);
-                accionPagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes. ESTADOS_TRAMITE_PAGO,"ACTIVO")));
+                accionPagoDTO.setEstadoId(estadoActivo);
                 accionPagoDTO.setActivo(Constantes.HABILITADO);
                 accionPagoDTO.setClienteId(1);
                 accionPagoDTO.setOrganizacionId(1);
