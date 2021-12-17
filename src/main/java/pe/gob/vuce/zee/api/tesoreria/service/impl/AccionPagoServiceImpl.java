@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.AccionPagoEntity;

@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TipoTramiteDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
+import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class AccionPagoController {
     @Autowired
     public AccionPagoService accionPagoService;
 
+    @Autowired
+    public TramitePagoService tramitePagoService;
+
     @PostMapping
     public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<AccionPagoDTO > listaAccionPagos, BindingResult result) {
 
@@ -40,6 +45,8 @@ public class AccionPagoController {
         List<AccionPagoDTO> nuevaListaAccionPago = accionPagoService.guardarAll(listaAccionPagos);
 
         UUID idTramitePago = nuevaListaAccionPago.get(0).getTramitePagoId();
+
+        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(idTramitePago, UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_TRAMITE_PAGO,"ACTIVO")));
 
         ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);

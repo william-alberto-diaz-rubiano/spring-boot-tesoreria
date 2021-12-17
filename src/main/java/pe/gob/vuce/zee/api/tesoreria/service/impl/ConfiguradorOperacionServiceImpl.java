@@ -12,7 +12,6 @@ import pe.gob.vuce.zee.api.tesoreria.dto.ConfiguradorOperacionDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.ConfiguradorOperacionEntity;
-import pe.gob.vuce.zee.api.tesoreria.models.MaestroEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.ConfiguradorOperacionRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.ConfiguradorOperacionService;
 
