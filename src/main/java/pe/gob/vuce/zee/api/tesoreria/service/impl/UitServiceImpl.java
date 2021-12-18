@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.UitDTO;
 import pe.gob.vuce.zee.api.tesoreria.models.UitEntity;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.repository.UitRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.UitService;
 
@@ -23,11 +24,16 @@ public class UitServiceImpl implements UitService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MaestroRepository maestroRepository;
+
     @Override
     public UitDTO guardar(UitDTO uitDTO) {
 
+        UUID estadoActivo= maestroRepository.findByPrefijoAndCorrelativo(37,1).getId();
+
         uitDTO.setEstadoDescripcion(null);
-        uitDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_UIT,"ACTIVO")));
+        uitDTO.setEstadoId(estadoActivo);
         uitDTO.setActivo(Constantes.HABILITADO);
         uitDTO.setClienteId(1);
         uitDTO.setOrganizacionId(1);

@@ -12,6 +12,7 @@ import pe.gob.vuce.zee.api.tesoreria.dto.RegistroComprobanteDTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.RegistroComprobanteEntity;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.repository.RegistroComprobanteRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.RegistroComprobanteService;
 
@@ -29,8 +30,13 @@ public class RegistroComprobanteServiceImpl implements RegistroComprobanteServic
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MaestroRepository maestroRepository;
+
     @Override
     public RegistroComprobanteDTO guardar(RegistroComprobanteDTO registroComprobanteDTO) {
+
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(54,1).getId();
 
         List<RegistroComprobanteDTO> litaSerieAsociada= busquedaPorFiltros(null,null,null,registroComprobanteDTO.getCodigoSerie(),registroComprobanteDTO.getCodigoComprobanteId());
 
@@ -42,7 +48,7 @@ public class RegistroComprobanteServiceImpl implements RegistroComprobanteServic
         registroComprobanteDTO.setEstadoDescripcion(null);
         registroComprobanteDTO.setCorrelativoInicial("0001");
         registroComprobanteDTO.setActivo(Constantes.HABILITADO);
-        registroComprobanteDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_REGISTRO_COMPROBANTES,"ACTIVO")));
+        registroComprobanteDTO.setEstadoId(estadoActivo);
         registroComprobanteDTO.setClienteId(1);
         registroComprobanteDTO.setOrganizacionId(1);
         registroComprobanteDTO.setUsuarioCreacionId(UUID.randomUUID());

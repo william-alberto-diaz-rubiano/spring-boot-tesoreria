@@ -13,6 +13,7 @@ import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.EntityNotFoundException;
 import pe.gob.vuce.zee.api.tesoreria.models.ConceptoPagoEntity;
 import pe.gob.vuce.zee.api.tesoreria.repository.ConceptosPagoRepository;
+import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.ConceptoPagoService;
 
 import java.time.LocalDate;
@@ -33,8 +34,13 @@ public class ConceptoPagoServiceImpl implements ConceptoPagoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MaestroRepository maestroRepository;
+
     @Override
     public ConceptoPagoDTO guardar(ConceptoPagoDTO conceptoPagoDTO) {
+
+        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(52,1).getId();
 
         conceptoPagoDTO.setCodigoCriterioDescripcion(null);
         conceptoPagoDTO.setCodigoMonedaDescripcion(null);
@@ -42,7 +48,7 @@ public class ConceptoPagoServiceImpl implements ConceptoPagoService {
         conceptoPagoDTO.setConfiguradorOperacionTramiteDescripcion(null);
         conceptoPagoDTO.setCodigoOperacionDescripcion(null);
         conceptoPagoDTO.setActivo(Constantes.HABILITADO);
-        conceptoPagoDTO.setEstadoId(UUID.fromString(Constantes.getSingleKeyFromValue(Constantes.ESTADOS_CONCEPTOS_PAGO,"ACTIVO")));
+        conceptoPagoDTO.setEstadoId(estadoActivo);
         conceptoPagoDTO.setClienteId(1);
         conceptoPagoDTO.setOrganizacionId(1);
         conceptoPagoDTO.setUsuarioCreacionId(UUID.randomUUID());

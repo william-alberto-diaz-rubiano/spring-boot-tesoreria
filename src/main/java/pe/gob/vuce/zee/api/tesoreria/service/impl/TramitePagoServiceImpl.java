@@ -136,11 +136,6 @@ public class TramitePagoServiceImpl implements TramitePagoService {
             throw new EntityNotFoundException("El tramite id del pago ingresado no existe");
         }
         TramitePagoDTO tramitePago = listadoTramitePago.get(0);
-        UUID estadoGuardado = tramitePago.getEstadoId();
-
-        //if(estadoGuardado.equals(nuevoEstado)){
-        //    throw new BadRequestException("FAILED", HttpStatus.BAD_REQUEST, "No se puede realizar el cambio de estado, el estado actual y el estado ingresado son el mismo");
-        //}
 
         tramitePago.setEstadoId(nuevoEstado);
         tramitePago.setConfiguradorOperacionTramiteDescripcion(null);

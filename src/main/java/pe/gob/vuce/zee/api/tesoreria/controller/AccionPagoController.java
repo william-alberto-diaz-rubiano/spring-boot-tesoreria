@@ -52,7 +52,7 @@ public class AccionPagoController {
 
         UUID idTramitePago = nuevaListaAccionPago.get(0).getTramitePagoId();
 
-        TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(idTramitePago,estadoActivo);
+        tramitePagoService.modificarEstado(idTramitePago,estadoActivo);
 
         ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada",idTramitePago);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
