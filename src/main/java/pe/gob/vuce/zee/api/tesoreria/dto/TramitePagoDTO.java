@@ -19,8 +19,14 @@ public class TramitePagoDTO {
     @NotNull(message = "El UUID del configurador de operaciones no puede ser nulo")
     private UUID configuradorOperacionId;
 
+    private UUID configuradorOperacionTramiteId;
+
     @NotNull(message = "La descripción del configurador de operaciones no puede ser nulo")
     private String configuradorOperacionTramiteDescripcion;
+
+    private UUID configuradorOperacionOperacionId;
+
+    private String configuradorOperacionOperacionDescripcion;
 
     @Size(max = 20,message = "La base legal soporta maximo 20 caracteres")
     private String codigoSistema;
