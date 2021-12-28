@@ -71,16 +71,19 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> buscarPorTramitePago ( @PathVariable("id") UUID id){
             String messege = "";
+            UUID tipoCalculoId;
 
             List<TipoTramiteDTO> listadoTipoTramite= tipoTramiteService.buscarTramitePago(id);
 
             if(listadoTipoTramite.isEmpty()){
                 messege="No se encontraron registros por el tramite de pago buscado";
+                tipoCalculoId=null;
             }else{
                 messege="Listado de tipos de tramite buscando por tramite de pago";
+                tipoCalculoId=listadoTipoTramite.get(0).getTipoCalculoId();
             }
 
-            UUID tipoCalculoId=listadoTipoTramite.get(0).getTipoCalculoId();
+
 
         ResponseDTO responseBody = new ResponseDTO("success",listadoTipoTramite, messege,tipoCalculoId);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
