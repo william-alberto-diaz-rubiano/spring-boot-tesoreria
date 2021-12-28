@@ -80,7 +80,9 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
                 messege="Listado de tipos de tramite buscando por tramite de pago";
             }
 
-        ResponseDTO responseBody = new ResponseDTO("success",listadoTipoTramite, messege);
+            UUID tipoCalculoId=listadoTipoTramite.get(0).getTipoCalculoId();
+
+        ResponseDTO responseBody = new ResponseDTO("success",listadoTipoTramite, messege,tipoCalculoId);
         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
     }
 

@@ -36,6 +36,7 @@ public class TramitePagoDTO {
 
     private String codigoProcesoDescripcion;
 
+
     private boolean flagDestinos;
     @NotNull(message = "El codigo del tramite no puede ser nulo")
     @Size(max = 20,message = "El codigo del tramite soporta maximo 20 caracteres")
