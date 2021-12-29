@@ -5,6 +5,8 @@ import java.util.Objects;
 
 public class Constantes {
 
+    public static int NO_ERROR = 0;
+
     public static int HABILITADO = 0;
     public static int DESHABILITADO = 9;
 

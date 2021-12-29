@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
+import pe.gob.vuce.zee.api.tesoreria.dto.Response2DTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
 import pe.gob.vuce.zee.api.tesoreria.dto.TipoCambioDTO;
@@ -21,9 +22,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public class TipoCambioController {
 
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> busquedaPorFitros(
+    public ResponseEntity<Response2DTO<Page<TipoCambioDTO>>> busquedaPorFitros(
             @RequestParam(name = "estado", required = false) UUID estado,
             @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
             @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
@@ -64,18 +63,18 @@ public class TipoCambioController {
             messege="No se encontraron registros";
 
         }else{
-            messege="Listado tipos de cambio";
+            messege="success";
 
         }
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
+        var rpta = new Response2DTO<>(HttpStatus.OK.value(),messege,listaDTOPaginada);
 
-        return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
+        return new ResponseEntity<>(rpta,HttpStatus.OK);
     }
 
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TipoCambioDTO tipoCambioDTO, BindingResult result) {
+    public ResponseEntity<Response2DTO<TipoCambioDTO>> guardar(@Valid @RequestBody TipoCambioDTO tipoCambioDTO, BindingResult result) {
 
         if(result.hasErrors()){
 
@@ -86,12 +85,13 @@ public class TipoCambioController {
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,listaErrores,"Verificar los campos");
         }
         TipoCambioDTO nuevoTipoCambio = tipoCambioService.guardar(tipoCambioDTO);
-        ResponseDTO responseBody = new ResponseDTO(nuevoTipoCambio,"Tipo de cambio creado","success",nuevoTipoCambio.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Guardado",nuevoTipoCambio);
+
+        return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
     }
 
     @GetMapping("/exportar")
-    public ResponseEntity<ResponseDTO> exportarTipoCambio(@RequestParam(name = "estado", required = false) UUID estado,
+    public void exportarTipoCambio(@RequestParam(name = "estado", required = false) UUID estado,
                                    @RequestParam(name = "fechainicio", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaInicio,
                                    @RequestParam(name = "fechafin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fechaFin,
                                    @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,
