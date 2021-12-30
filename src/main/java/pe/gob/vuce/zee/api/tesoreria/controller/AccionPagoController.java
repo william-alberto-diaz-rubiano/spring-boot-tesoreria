@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
-import pe.gob.vuce.zee.api.tesoreria.dto.AccionPagoDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.*;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.repository.MaestroRepository;
 import pe.gob.vuce.zee.api.tesoreria.service.AccionPagoService;
@@ -36,9 +33,9 @@ public class AccionPagoController {
     private MaestroRepository maestroRepository;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<AccionPagoDTO > listaAccionPagos, BindingResult result) {
+    public ResponseEntity<Response2DTO<AccionPagoGuardarDTO>> guardar(@Valid @RequestBody List<AccionPagoDTO> listaAccionPagos, BindingResult result) {
 
-        UUID estadoActivo=maestroRepository.findByPrefijoAndCorrelativo(34,1).getId();
+        UUID estadoActivo = maestroRepository.findByPrefijoAndCorrelativo(34, 1).getId();
 
         if (result.hasErrors()) {
 
@@ -52,16 +49,22 @@ public class AccionPagoController {
 
         UUID idTramitePago = nuevaListaAccionPago.get(0).getTramitePagoId();
 
-        tramitePagoService.modificarEstado(idTramitePago,estadoActivo);
+        AccionPagoGuardarDTO accionPagoGuardarDTO = new AccionPagoGuardarDTO();
 
-        ResponseDTO responseBody = new ResponseDTO("success",nuevaListaAccionPago,"Lista de accion de pagos guardada",idTramitePago);
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        accionPagoGuardarDTO.setIdTramite(idTramitePago);
+        accionPagoGuardarDTO.setListaAccionPago(nuevaListaAccionPago);
+
+        tramitePagoService.modificarEstado(idTramitePago, estadoActivo);
+
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(), "Guardado", accionPagoGuardarDTO);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO> modificar(@Valid
-                                                     @RequestBody List<AccionPagoDTO > listaAccionPagos,
-                                                 BindingResult result) {
+    public ResponseEntity<Response2DTO<AccionPagoGuardarDTO>> modificar(@Valid
+                                                                            @RequestBody List<AccionPagoDTO> listaAccionPagos,
+                                                                        BindingResult result) {
         if (result.hasErrors()) {
 
             List<String> listaErrores = new ArrayList<>();
@@ -74,12 +77,18 @@ public class AccionPagoController {
 
         UUID idTramitePago = modificarListaAccionPago.get(0).getTramitePagoId();
 
-        ResponseDTO responseBody = new ResponseDTO("success",modificarListaAccionPago,"Lista de accion de pagos modificada",idTramitePago);
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        AccionPagoGuardarDTO accionPagoGuardarDTO = new AccionPagoGuardarDTO();
+
+        accionPagoGuardarDTO.setIdTramite(idTramitePago);
+        accionPagoGuardarDTO.setListaAccionPago(modificarListaAccionPago);
+
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(), "Modificado", accionPagoGuardarDTO);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO> buscarPorTramitePago(@PathVariable("id") UUID id) {
+    public ResponseEntity<Response2DTO<List<AccionPagoDTO>>> buscarPorTramitePago(@PathVariable("id") UUID id) {
         String messege = "";
 
         List<AccionPagoDTO> listadoAccionPago = accionPagoService.buscarPorTramitePago(id);
@@ -90,7 +99,7 @@ public class AccionPagoController {
             messege = "Listado de acciones de tramite buscandos por tramite de pago";
         }
 
-        ResponseDTO responseBody = new ResponseDTO("success", listadoAccionPago, messege);
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+        var responseBody = new Response2DTO<>(HttpStatus.OK.value(), messege, listadoAccionPago);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }

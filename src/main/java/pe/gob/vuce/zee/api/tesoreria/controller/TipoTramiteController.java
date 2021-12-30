@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TipoTramiteDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.*;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.service.TipoTramiteService;
 
@@ -27,7 +26,7 @@ public class TipoTramiteController {
 
 
 @PostMapping
-public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteDTO> listaTipoTramites, BindingResult result) {
+public ResponseEntity<Response2DTO<TipoTramiteGuardarDTO>> guardar(@Valid @RequestBody List<TipoTramiteDTO> listaTipoTramites, BindingResult result) {
 
     if(result.hasErrors()){
 
@@ -42,12 +41,18 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
 
     UUID idTramitePago = nuevoListaTipoTramite.get(0).getTramitePagoId();
 
-    ResponseDTO responseBody = new ResponseDTO("success",nuevoListaTipoTramite,"Lista de tipos de tramite guardada", idTramitePago);
-    return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+    TipoTramiteGuardarDTO nuevoTipoTramiteGuardarDTO = new TipoTramiteGuardarDTO();
+
+    nuevoTipoTramiteGuardarDTO.setIdTramite(idTramitePago);
+    nuevoTipoTramiteGuardarDTO.setListaTipoTramite(nuevoListaTipoTramite);
+
+    var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Guardado", nuevoTipoTramiteGuardarDTO);
+
+    return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
 }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO> modificar(@Valid
+    public ResponseEntity<Response2DTO<TipoTramiteGuardarDTO>> modificar(@Valid
                                                  @RequestBody List<TipoTramiteDTO> listaTipoTramites,
                                                  BindingResult result){
         if(result.hasErrors()){
@@ -63,30 +68,47 @@ public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody List<TipoTramiteD
 
         UUID idTramitePago = modificarListaTipoTramite.get(0).getTramitePagoId();
 
-        ResponseDTO responseBody = new ResponseDTO("success",modificarListaTipoTramite,"Lista de tipos de tramite modififcada",idTramitePago);
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        TipoTramiteGuardarDTO nuevoTipoTramiteGuardarDTO = new TipoTramiteGuardarDTO();
+
+        nuevoTipoTramiteGuardarDTO.setIdTramite(idTramitePago);
+        nuevoTipoTramiteGuardarDTO.setListaTipoTramite(modificarListaTipoTramite);
+
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Modificado", nuevoTipoTramiteGuardarDTO);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO> buscarPorTramitePago ( @PathVariable("id") UUID id){
-            String messege = "";
-            UUID tipoCalculoId;
+    public ResponseEntity<Response2DTO<TipoTramiteListarDTO>> buscarPorTramitePago ( @PathVariable("id") UUID id){
+        TipoTramiteListarDTO tipoTramiteListarDTO=new TipoTramiteListarDTO();
+        String messege = "";
 
-            List<TipoTramiteDTO> listadoTipoTramite= tipoTramiteService.buscarTramitePago(id);
+        List<TipoTramiteDTO> listadoTipoTramite= tipoTramiteService.buscarTramitePago(id);
 
-            if(listadoTipoTramite.isEmpty()){
+        if(listadoTipoTramite.isEmpty()){
                 messege="No se encontraron registros por el tramite de pago buscado";
-                tipoCalculoId=null;
-            }else{
+        }else{
                 messege="Listado de tipos de tramite buscando por tramite de pago";
-                tipoCalculoId=listadoTipoTramite.get(0).getTipoCalculoId();
-            }
+
+                tipoTramiteListarDTO.setTipoCalculoId(listadoTipoTramite.get(0).getTipoCalculoId());
+                tipoTramiteListarDTO.setTipoCalculoDescripcion(listadoTipoTramite.get(0).getTipoCalculoDescripcion());
+                tipoTramiteListarDTO.setCodigoModuloId(listadoTipoTramite.get(0).getCodigoModuloId());
+                tipoTramiteListarDTO.setCodigoModuloDescripcion(listadoTipoTramite.get(0).getCodigoModuloDescripcion());
+                tipoTramiteListarDTO.setCodigoProcesoId(listadoTipoTramite.get(0).getCodigoProcesoId());
+                tipoTramiteListarDTO.setCodigoProcesoDescripcion(listadoTipoTramite.get(0).getCodigoProcesoDescripcion());
+                tipoTramiteListarDTO.setCodigoFormularioId(listadoTipoTramite.get(0).getCodigoFormularioId());
+                tipoTramiteListarDTO.setCodigoFormularioDescripcion(listadoTipoTramite.get(0).getCodigoFormularioDescripcion());
+                tipoTramiteListarDTO.setCodigoAccionId(listadoTipoTramite.get(0).getCodigoAccionId());
+                tipoTramiteListarDTO.setCodigoAccionDescripcion(listadoTipoTramite.get(0).getCodigoAccionDescripcion());
+                tipoTramiteListarDTO.setPreguntaDatoInformado(listadoTipoTramite.get(0).getPreguntaDatoInformado());
+                tipoTramiteListarDTO.setListadoTipoTramite(listadoTipoTramite);
+        }
 
 
+        var responseBody = new Response2DTO<>(HttpStatus.OK.value(), messege,tipoTramiteListarDTO);
 
-        ResponseDTO responseBody = new ResponseDTO("success",listadoTipoTramite, messege,tipoCalculoId);
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
 }
