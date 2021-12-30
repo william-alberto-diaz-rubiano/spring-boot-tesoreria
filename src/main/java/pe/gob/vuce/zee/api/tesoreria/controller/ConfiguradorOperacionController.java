@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
 import pe.gob.vuce.zee.api.tesoreria.dto.ConfiguradorOperacionDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.Response2DTO;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.service.ConfiguradorOperacionService;
 import pe.gob.vuce.zee.api.tesoreria.utils.ExportarUtil;
@@ -34,7 +34,7 @@ public class ConfiguradorOperacionController {
     private ConfiguradorOperacionService configuradorOperacionService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> busquedaPorFitros(
+    public ResponseEntity<Response2DTO<Page<ConfiguradorOperacionDTO>>> busquedaPorFitros(
             @RequestParam(name = "tramite", required = false) UUID tramite,
             @RequestParam(name = "operacion", required = false) UUID operacion,
             Pageable paginador){
@@ -46,14 +46,15 @@ public class ConfiguradorOperacionController {
         if(listaDTOPaginada.isEmpty()){
             messege="No se encontraron registros";
         }else{
-            messege="Listado configurador de operaciones";
+            messege="success";
 
         }
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada, messege);
-        return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
+        var rpta = new Response2DTO<>(HttpStatus.OK.value(),messege,listaDTOPaginada);
+
+        return new ResponseEntity<>(rpta,HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO,BindingResult result) {
+    public ResponseEntity<Response2DTO<ConfiguradorOperacionDTO>> guardar(@Valid @RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO,BindingResult result) {
         if(result.hasErrors()){
 
             List<String> listaErrores = new ArrayList<>();
@@ -64,12 +65,13 @@ public class ConfiguradorOperacionController {
         }
         ConfiguradorOperacionDTO nuevaConfiguracion = configuradorOperacionService.guardar(configuradorOperacionDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(nuevaConfiguracion,"Configurador creado","success",nuevaConfiguracion.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Guardado",nuevaConfiguracion);
+
+        return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> modificar(@PathVariable("id") UUID id,@RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO){
+    public ResponseEntity<Response2DTO<ConfiguradorOperacionDTO>> modificar(@PathVariable("id") UUID id,@RequestBody ConfiguradorOperacionDTO configuradorOperacionDTO){
 
         if( configuradorOperacionDTO.getOperacionId() == null){
             throw new BadRequestException("FAILED",HttpStatus.BAD_REQUEST,"El campo de operacionid no puede ser nulo");
@@ -80,13 +82,14 @@ public class ConfiguradorOperacionController {
 
         ConfiguradorOperacionDTO modificarConfiguracion = configuradorOperacionService.modificar(id,configuradorOperacionDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarConfiguracion,"Configurador modificado","success",modificarConfiguracion.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Modificado",modificarConfiguracion);
+
+        return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
     }
 
 
     @GetMapping("/exportar")
-    public ResponseEntity<ResponseDTO> busquedaPorFitros(
+    public void busquedaPorFitros(
             @RequestParam(name = "tramite", required = false) UUID tramite,
             @RequestParam(name = "operacion", required = false) UUID operacion,
             @RequestParam(name = "extension", required = false, defaultValue = "xls") String formato,

@@ -10,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.vuce.zee.api.tesoreria.base.Constantes;
-import pe.gob.vuce.zee.api.tesoreria.dto.ResponseDTO;
-import pe.gob.vuce.zee.api.tesoreria.dto.TramitePagoDTO;
+import pe.gob.vuce.zee.api.tesoreria.dto.*;
 import pe.gob.vuce.zee.api.tesoreria.exceptions.BadRequestException;
 import pe.gob.vuce.zee.api.tesoreria.service.TramitePagoService;
 import pe.gob.vuce.zee.api.tesoreria.utils.ExportarUtil;
@@ -37,7 +36,7 @@ public class TramitePagoController {
 
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> busquedaPorFitros(
+    public ResponseEntity<Response2DTO<Page<TramitePagoDTO>>> busquedaPorFitros(
             @RequestParam(name = "id", required = false) UUID id,
             @RequestParam(name = "tipotramite", required = false) UUID tipoTramite,
             @RequestParam(name = "nombretramite", required = false) String nombreTramite,
@@ -69,16 +68,16 @@ public class TramitePagoController {
         if(listaDTOPaginada.isEmpty()){
             messege="No se encontraron registros";
         }else{
-            messege="Listado de tramites de pago";
+            messege="success";
         }
 
-        ResponseDTO rpta = new ResponseDTO("success", listaDTOPaginada,messege);
+        var rpta = new Response2DTO<>(HttpStatus.OK.value(),messege,listaDTOPaginada);
 
-        return new ResponseEntity<ResponseDTO>(rpta, HttpStatus.OK);
+        return new ResponseEntity<>(rpta, HttpStatus.OK);
         }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> guardar(@Valid @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result) {
+    public ResponseEntity<Response2DTO<TramitePagoDTO>> guardar(@Valid @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result) {
 
         if(result.hasErrors()){
 
@@ -93,12 +92,14 @@ public class TramitePagoController {
         tramitePagoDTO.setNombrePago(nombreTramiteMayuscula);
 
         TramitePagoDTO nuevoTramitePago = tramitePagoService.guardar(tramitePagoDTO);
-        ResponseDTO responseBody = new ResponseDTO(nuevoTramitePago,"Informacion principal guardada","success",nuevoTramitePago.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Guardado",nuevoTramitePago);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> modificar(@Valid
+    public ResponseEntity<Response2DTO<TramitePagoDTO>> modificar(@Valid
                                                  @PathVariable("id") UUID id,
                                                  @RequestBody TramitePagoDTO tramitePagoDTO, BindingResult result){
         if(result.hasErrors()){
@@ -112,8 +113,9 @@ public class TramitePagoController {
 
         TramitePagoDTO modificarTramitePago = tramitePagoService.modificar(id, tramitePagoDTO);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramitePago,"Informacion principal del tramite modificada","success",modificarTramitePago.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.CREATED);
+        var responseBody = new Response2DTO<>(HttpStatus.CREATED.value(),"Modificado",modificarTramitePago);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @GetMapping("/exportar")
@@ -184,19 +186,21 @@ public class TramitePagoController {
     }
 
     @PutMapping("/{id}/{nuevoEstado}")
-    public ResponseEntity<ResponseDTO> modificarEstado(@PathVariable("id") UUID id,@PathVariable("nuevoEstado") UUID nuevoEstado){
+    public ResponseEntity<Response2DTO<TramitePagoDTO>> modificarEstado(@PathVariable("id") UUID id,@PathVariable("nuevoEstado") UUID nuevoEstado){
 
         TramitePagoDTO modificarTramiteEstado = tramitePagoService.modificarEstado(id, nuevoEstado);
 
-        ResponseDTO responseBody = new ResponseDTO(modificarTramiteEstado,"Estado modificado","success",modificarTramiteEstado.getId());
-        return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+        var responseBody = new Response2DTO<>(HttpStatus.OK.value(),"Estado modificado", modificarTramiteEstado);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     @GetMapping("/codigoSistema")
-     public ResponseEntity<ResponseDTO> codigoSistema(){
+     public ResponseEntity<Response2DTO<String>> codigoSistema(){
         String codigo = tramitePagoService.codigoSistema();
-         ResponseDTO responseBody = new ResponseDTO("success",codigo,"Codigo del sistema");
-         return new ResponseEntity<ResponseDTO>(responseBody, HttpStatus.OK);
+
+         var responseBody = new Response2DTO<>(HttpStatus.OK.value(),"Codigo del sistema",codigo);
+         return new ResponseEntity<>(responseBody, HttpStatus.OK);
      }
 }
 
