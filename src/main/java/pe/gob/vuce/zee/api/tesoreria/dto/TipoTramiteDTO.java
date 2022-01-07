@@ -27,7 +27,6 @@ public class TipoTramiteDTO {
     private UUID tipoCalculoId;
     private String tipoCalculoDescripcion;
 
-    @NotNull(message = "El codigo del destino no puede ser nulo")
     private UUID codigoDestinoId;
     private String codigoDestinoDescripcion;
 
